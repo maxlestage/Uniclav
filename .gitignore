@@ -1,0 +1,15 @@
+# Xcode (le projet est généré par `xcodegen generate`)
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+build/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
