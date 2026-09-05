@@ -74,8 +74,8 @@ final class AccentPopupView: UIView {
     private func highlight(index: Int) {
         selectedIndex = index
         for (i, label) in labels.enumerated() {
-            label.backgroundColor = i == index ? .systemBlue : .clear
-            label.textColor = i == index ? .white : .label
+            label.backgroundColor = i == index ? Palette.accentUIColor : .clear
+            label.textColor = i == index ? Palette.onAccentUIColor : .label
         }
     }
 }

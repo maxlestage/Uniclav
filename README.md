@@ -94,6 +94,16 @@ Le motif est une touche de clavier unique, portant un A dessiné au trait.
 Un seul élément, très grand : c'est ce qui reste lisible à 40 px sur un écran
 d'accueil, là où une grille de touches devient une texture indistincte.
 
+La palette est **encre sur sable**, définie dans `Shared/Palette.swift` et
+partagée par les trois cibles. Le fond clair n'est pas un choix décoratif : un
+écran d'accueil est un mur de carrés sombres et saturés, et une icône claire
+s'y repère par inversion plutôt que par nuance. C'est aussi, des variantes
+essayées, celle qui donne le plus fort contraste sur la lettre — ce qui compte
+pour une personne dont le champ visuel peut être amputé après un AVC.
+
+L'accent de l'interface suit la même encre, et inverse ses rôles en mode
+sombre, où l'encre disparaîtrait.
+
 Sur iPhone, deux touches fantômes traînent vers le bas à gauche — la course de
 la main qui vient chercher la touche. Sur la montre, cette traînée disparaît :
 **watchOS masque l'icône en cercle** et l'aurait tronquée, la touche seule y

@@ -8,6 +8,7 @@ struct UniclavApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(updater)
+                .tint(Palette.accent)
                 .task {
                     // Au lancement : mise à jour si elle est due, puis on
                     // replanifie le réveil en arrière-plan.

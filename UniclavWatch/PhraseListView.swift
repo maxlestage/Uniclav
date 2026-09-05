@@ -20,6 +20,7 @@ struct PhraseListView: View {
                 }
             }
             .navigationTitle("Uniclav")
+            .tint(Palette.accent)
             .navigationDestination(for: Phrase.self) { phrase in
                 PhraseDisplayView(phrase: phrase)
             }

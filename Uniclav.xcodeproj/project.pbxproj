@@ -7,40 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1B2C300000000000000001F /* UniclavApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000001 /* UniclavApp.swift */; };
-		A1B2C3000000000000000020 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000002 /* ContentView.swift */; };
-		A1B2C3000000000000000021 /* WiktionaryClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000003 /* WiktionaryClient.swift */; };
-		A1B2C3000000000000000022 /* DictionaryUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000004 /* DictionaryUpdate.swift */; };
-		A1B2C3000000000000000023 /* KeyboardSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000016 /* KeyboardSettings.swift */; };
-		A1B2C3000000000000000024 /* LetterGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000017 /* LetterGroups.swift */; };
-		A1B2C3000000000000000025 /* DictionaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000018 /* DictionaryStore.swift */; };
-		A1B2C3000000000000000026 /* PendingWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000019 /* PendingWords.swift */; };
-		A1B2C3000000000000000027 /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001A /* PredictionEngine.swift */; };
-		A1B2C3000000000000000028 /* dictionnaire_fr.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001B /* dictionnaire_fr.txt */; };
-		A1B2C3000000000000000029 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000007 /* Assets.xcassets */; };
-		A1B2C300000000000000002A /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000008 /* KeyboardViewController.swift */; };
-		A1B2C300000000000000002B /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000009 /* KeyboardView.swift */; };
-		A1B2C300000000000000002C /* KeyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000A /* KeyButton.swift */; };
-		A1B2C300000000000000002D /* AccentPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000B /* AccentPopupView.swift */; };
-		A1B2C300000000000000002E /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000C /* Key.swift */; };
-		A1B2C300000000000000002F /* KeyboardSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000016 /* KeyboardSettings.swift */; };
-		A1B2C3000000000000000030 /* LetterGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000017 /* LetterGroups.swift */; };
-		A1B2C3000000000000000031 /* DictionaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000018 /* DictionaryStore.swift */; };
-		A1B2C3000000000000000032 /* PendingWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000019 /* PendingWords.swift */; };
-		A1B2C3000000000000000033 /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001A /* PredictionEngine.swift */; };
-		A1B2C3000000000000000034 /* dictionnaire_fr.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001B /* dictionnaire_fr.txt */; };
-		A1B2C3000000000000000035 /* UniclavWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000F /* UniclavWatchApp.swift */; };
-		A1B2C3000000000000000036 /* PhraseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000010 /* PhraseListView.swift */; };
-		A1B2C3000000000000000037 /* PhraseDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000011 /* PhraseDisplayView.swift */; };
-		A1B2C3000000000000000038 /* PhraseLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000012 /* PhraseLibrary.swift */; };
-		A1B2C3000000000000000039 /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000013 /* Speaker.swift */; };
-		A1B2C300000000000000003A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000015 /* Assets.xcassets */; };
-		A1B2C300000000000000003B /* UniclavKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001D /* UniclavKeyboard.appex */; settings = {
+		A1B2C3000000000000000020 /* UniclavApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000001 /* UniclavApp.swift */; };
+		A1B2C3000000000000000021 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000002 /* ContentView.swift */; };
+		A1B2C3000000000000000022 /* WiktionaryClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000003 /* WiktionaryClient.swift */; };
+		A1B2C3000000000000000023 /* DictionaryUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000004 /* DictionaryUpdate.swift */; };
+		A1B2C3000000000000000024 /* KeyboardSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000016 /* KeyboardSettings.swift */; };
+		A1B2C3000000000000000025 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000018 /* Palette.swift */; };
+		A1B2C3000000000000000026 /* LetterGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000017 /* LetterGroups.swift */; };
+		A1B2C3000000000000000027 /* DictionaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000019 /* DictionaryStore.swift */; };
+		A1B2C3000000000000000028 /* PendingWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001A /* PendingWords.swift */; };
+		A1B2C3000000000000000029 /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001B /* PredictionEngine.swift */; };
+		A1B2C300000000000000002A /* dictionnaire_fr.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001C /* dictionnaire_fr.txt */; };
+		A1B2C300000000000000002B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000007 /* Assets.xcassets */; };
+		A1B2C300000000000000002C /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000008 /* KeyboardViewController.swift */; };
+		A1B2C300000000000000002D /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000009 /* KeyboardView.swift */; };
+		A1B2C300000000000000002E /* KeyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000A /* KeyButton.swift */; };
+		A1B2C300000000000000002F /* AccentPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000B /* AccentPopupView.swift */; };
+		A1B2C3000000000000000030 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000C /* Key.swift */; };
+		A1B2C3000000000000000031 /* KeyboardSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000016 /* KeyboardSettings.swift */; };
+		A1B2C3000000000000000032 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000018 /* Palette.swift */; };
+		A1B2C3000000000000000033 /* LetterGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000017 /* LetterGroups.swift */; };
+		A1B2C3000000000000000034 /* DictionaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000019 /* DictionaryStore.swift */; };
+		A1B2C3000000000000000035 /* PendingWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001A /* PendingWords.swift */; };
+		A1B2C3000000000000000036 /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001B /* PredictionEngine.swift */; };
+		A1B2C3000000000000000037 /* dictionnaire_fr.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001C /* dictionnaire_fr.txt */; };
+		A1B2C3000000000000000038 /* UniclavWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000000F /* UniclavWatchApp.swift */; };
+		A1B2C3000000000000000039 /* PhraseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000010 /* PhraseListView.swift */; };
+		A1B2C300000000000000003A /* PhraseDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000011 /* PhraseDisplayView.swift */; };
+		A1B2C300000000000000003B /* PhraseLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000012 /* PhraseLibrary.swift */; };
+		A1B2C300000000000000003C /* Speaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000013 /* Speaker.swift */; };
+		A1B2C300000000000000003D /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000018 /* Palette.swift */; };
+		A1B2C300000000000000003E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000015 /* Assets.xcassets */; };
+		A1B2C300000000000000003F /* UniclavKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001E /* UniclavKeyboard.appex */; settings = {
 	ATTRIBUTES = (
 		RemoveHeadersOnCopy,
 	);
 }; };
-		A1B2C300000000000000003C /* UniclavWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001E /* UniclavWatch.app */; settings = {
+		A1B2C3000000000000000040 /* UniclavWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001F /* UniclavWatch.app */; settings = {
 	ATTRIBUTES = (
 		RemoveHeadersOnCopy,
 	);
@@ -48,41 +51,41 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A1B2C300000000000000005C /* PBXContainerItemProxy */ = {
+		A1B2C3000000000000000060 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1B2C3FFFFFFFFFFFFFFFFFF /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A1B2C300000000000000005A /* UniclavKeyboard */;
+			remoteGlobalIDString = A1B2C300000000000000005E /* UniclavKeyboard */;
 			remoteInfo = UniclavKeyboard;
 		};
-		A1B2C300000000000000005E /* PBXContainerItemProxy */ = {
+		A1B2C3000000000000000062 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A1B2C3FFFFFFFFFFFFFFFFFF /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A1B2C300000000000000005B /* UniclavWatch */;
+			remoteGlobalIDString = A1B2C300000000000000005F /* UniclavWatch */;
 			remoteInfo = UniclavWatch;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A1B2C3000000000000000046 /* Embed Foundation Extensions */ = {
+		A1B2C300000000000000004A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				A1B2C300000000000000003B /* UniclavKeyboard.appex in Embed Foundation Extensions */,
+				A1B2C300000000000000003F /* UniclavKeyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C3000000000000000047 /* Embed Watch Content */ = {
+		A1B2C300000000000000004B /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				A1B2C300000000000000003C /* UniclavWatch.app in Embed Watch Content */,
+				A1B2C3000000000000000040 /* UniclavWatch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,31 +116,32 @@
 		A1B2C3000000000000000015 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B2C3000000000000000016 /* KeyboardSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSettings.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000017 /* LetterGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterGroups.swift; sourceTree = "<group>"; };
-		A1B2C3000000000000000018 /* DictionaryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryStore.swift; sourceTree = "<group>"; };
-		A1B2C3000000000000000019 /* PendingWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingWords.swift; sourceTree = "<group>"; };
-		A1B2C300000000000000001A /* PredictionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionEngine.swift; sourceTree = "<group>"; };
-		A1B2C300000000000000001B /* dictionnaire_fr.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = dictionnaire_fr.txt; sourceTree = "<group>"; };
-		A1B2C300000000000000001C /* Uniclav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Uniclav.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C300000000000000001D /* UniclavKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UniclavKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C300000000000000001E /* UniclavWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniclavWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3000000000000000018 /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
+		A1B2C3000000000000000019 /* DictionaryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryStore.swift; sourceTree = "<group>"; };
+		A1B2C300000000000000001A /* PendingWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingWords.swift; sourceTree = "<group>"; };
+		A1B2C300000000000000001B /* PredictionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionEngine.swift; sourceTree = "<group>"; };
+		A1B2C300000000000000001C /* dictionnaire_fr.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = dictionnaire_fr.txt; sourceTree = "<group>"; };
+		A1B2C300000000000000001D /* Uniclav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Uniclav.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C300000000000000001E /* UniclavKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UniclavKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C300000000000000001F /* UniclavWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UniclavWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A1B2C3000000000000000044 /* Frameworks */ = {
+		A1B2C3000000000000000048 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C3000000000000000049 /* Frameworks */ = {
+		A1B2C300000000000000004D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C300000000000000004C /* Frameworks */ = {
+		A1B2C3000000000000000050 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -147,7 +151,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A1B2C300000000000000003D /* Uniclav */ = {
+		A1B2C3000000000000000041 /* Uniclav */ = {
 			isa = PBXGroup;
 			children = (
 				A1B2C3000000000000000001 /* UniclavApp.swift */,
@@ -161,7 +165,7 @@
 			path = Uniclav;
 			sourceTree = "<group>";
 		};
-		A1B2C300000000000000003E /* UniclavKeyboard */ = {
+		A1B2C3000000000000000042 /* UniclavKeyboard */ = {
 			isa = PBXGroup;
 			children = (
 				A1B2C3000000000000000008 /* KeyboardViewController.swift */,
@@ -175,7 +179,7 @@
 			path = UniclavKeyboard;
 			sourceTree = "<group>";
 		};
-		A1B2C300000000000000003F /* UniclavWatch */ = {
+		A1B2C3000000000000000043 /* UniclavWatch */ = {
 			isa = PBXGroup;
 			children = (
 				A1B2C300000000000000000F /* UniclavWatchApp.swift */,
@@ -189,50 +193,51 @@
 			path = UniclavWatch;
 			sourceTree = "<group>";
 		};
-		A1B2C3000000000000000040 /* Shared */ = {
+		A1B2C3000000000000000044 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				A1B2C3000000000000000016 /* KeyboardSettings.swift */,
+				A1B2C3000000000000000018 /* Palette.swift */,
 				A1B2C3000000000000000017 /* LetterGroups.swift */,
-				A1B2C3000000000000000018 /* DictionaryStore.swift */,
-				A1B2C3000000000000000019 /* PendingWords.swift */,
-				A1B2C300000000000000001A /* PredictionEngine.swift */,
-				A1B2C300000000000000001B /* dictionnaire_fr.txt */,
+				A1B2C3000000000000000019 /* DictionaryStore.swift */,
+				A1B2C300000000000000001A /* PendingWords.swift */,
+				A1B2C300000000000000001B /* PredictionEngine.swift */,
+				A1B2C300000000000000001C /* dictionnaire_fr.txt */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
-		A1B2C3000000000000000041 /* Products */ = {
+		A1B2C3000000000000000045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1B2C300000000000000001C /* Uniclav.app */,
-				A1B2C300000000000000001D /* UniclavKeyboard.appex */,
-				A1B2C300000000000000001E /* UniclavWatch.app */,
+				A1B2C300000000000000001D /* Uniclav.app */,
+				A1B2C300000000000000001E /* UniclavKeyboard.appex */,
+				A1B2C300000000000000001F /* UniclavWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A1B2C3000000000000000042 = {
+		A1B2C3000000000000000046 = {
 			isa = PBXGroup;
 			children = (
-				A1B2C300000000000000003D /* Uniclav */,
-				A1B2C300000000000000003E /* UniclavKeyboard */,
-				A1B2C300000000000000003F /* UniclavWatch */,
-				A1B2C3000000000000000040 /* Shared */,
-				A1B2C3000000000000000041 /* Products */,
+				A1B2C3000000000000000041 /* Uniclav */,
+				A1B2C3000000000000000042 /* UniclavKeyboard */,
+				A1B2C3000000000000000043 /* UniclavWatch */,
+				A1B2C3000000000000000044 /* Shared */,
+				A1B2C3000000000000000045 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A1B2C300000000000000005A /* UniclavKeyboard */ = {
+		A1B2C300000000000000005E /* UniclavKeyboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1B2C3000000000000000056 /* Build configuration list for PBXNativeTarget "UniclavKeyboard" */;
+			buildConfigurationList = A1B2C300000000000000005A /* Build configuration list for PBXNativeTarget "UniclavKeyboard" */;
 			buildPhases = (
-				A1B2C3000000000000000048 /* Sources */,
-				A1B2C3000000000000000049 /* Frameworks */,
-				A1B2C300000000000000004A /* Resources */,
+				A1B2C300000000000000004C /* Sources */,
+				A1B2C300000000000000004D /* Frameworks */,
+				A1B2C300000000000000004E /* Resources */,
 			);
 			buildRules = (
 			);
@@ -240,16 +245,16 @@
 			);
 			name = UniclavKeyboard;
 			productName = UniclavKeyboard;
-			productReference = A1B2C300000000000000001D /* UniclavKeyboard.appex */;
+			productReference = A1B2C300000000000000001E /* UniclavKeyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		A1B2C300000000000000005B /* UniclavWatch */ = {
+		A1B2C300000000000000005F /* UniclavWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1B2C3000000000000000059 /* Build configuration list for PBXNativeTarget "UniclavWatch" */;
+			buildConfigurationList = A1B2C300000000000000005D /* Build configuration list for PBXNativeTarget "UniclavWatch" */;
 			buildPhases = (
-				A1B2C300000000000000004B /* Sources */,
-				A1B2C300000000000000004C /* Frameworks */,
-				A1B2C300000000000000004D /* Resources */,
+				A1B2C300000000000000004F /* Sources */,
+				A1B2C3000000000000000050 /* Frameworks */,
+				A1B2C3000000000000000051 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -257,28 +262,28 @@
 			);
 			name = UniclavWatch;
 			productName = UniclavWatch;
-			productReference = A1B2C300000000000000001E /* UniclavWatch.app */;
+			productReference = A1B2C300000000000000001F /* UniclavWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A1B2C3000000000000000060 /* Uniclav */ = {
+		A1B2C3000000000000000064 /* Uniclav */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1B2C3000000000000000053 /* Build configuration list for PBXNativeTarget "Uniclav" */;
+			buildConfigurationList = A1B2C3000000000000000057 /* Build configuration list for PBXNativeTarget "Uniclav" */;
 			buildPhases = (
-				A1B2C3000000000000000043 /* Sources */,
-				A1B2C3000000000000000044 /* Frameworks */,
-				A1B2C3000000000000000045 /* Resources */,
-				A1B2C3000000000000000046 /* Embed Foundation Extensions */,
-				A1B2C3000000000000000047 /* Embed Watch Content */,
+				A1B2C3000000000000000047 /* Sources */,
+				A1B2C3000000000000000048 /* Frameworks */,
+				A1B2C3000000000000000049 /* Resources */,
+				A1B2C300000000000000004A /* Embed Foundation Extensions */,
+				A1B2C300000000000000004B /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A1B2C300000000000000005D /* PBXTargetDependency */,
-				A1B2C300000000000000005F /* PBXTargetDependency */,
+				A1B2C3000000000000000061 /* PBXTargetDependency */,
+				A1B2C3000000000000000063 /* PBXTargetDependency */,
 			);
 			name = Uniclav;
 			productName = Uniclav;
-			productReference = A1B2C300000000000000001C /* Uniclav.app */;
+			productReference = A1B2C300000000000000001D /* Uniclav.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -291,18 +296,18 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					A1B2C3000000000000000060 = {
+					A1B2C3000000000000000064 = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					A1B2C300000000000000005A = {
+					A1B2C300000000000000005E = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					A1B2C300000000000000005B = {
+					A1B2C300000000000000005F = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
-			buildConfigurationList = A1B2C3000000000000000050 /* Build configuration list for PBXProject "Uniclav" */;
+			buildConfigurationList = A1B2C3000000000000000054 /* Build configuration list for PBXProject "Uniclav" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = fr;
 			hasScannedForEncodings = 0;
@@ -311,109 +316,112 @@
 				fr,
 				Base,
 			);
-			mainGroup = A1B2C3000000000000000042;
-			productRefGroup = A1B2C3000000000000000041 /* Products */;
+			mainGroup = A1B2C3000000000000000046;
+			productRefGroup = A1B2C3000000000000000045 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1B2C3000000000000000060 /* Uniclav */,
-				A1B2C300000000000000005A /* UniclavKeyboard */,
-				A1B2C300000000000000005B /* UniclavWatch */,
+				A1B2C3000000000000000064 /* Uniclav */,
+				A1B2C300000000000000005E /* UniclavKeyboard */,
+				A1B2C300000000000000005F /* UniclavWatch */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A1B2C3000000000000000045 /* Resources */ = {
+		A1B2C3000000000000000049 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C3000000000000000028 /* dictionnaire_fr.txt in Resources */,
-				A1B2C3000000000000000029 /* Assets.xcassets in Resources */,
+				A1B2C300000000000000002A /* dictionnaire_fr.txt in Resources */,
+				A1B2C300000000000000002B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C300000000000000004A /* Resources */ = {
+		A1B2C300000000000000004E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C3000000000000000034 /* dictionnaire_fr.txt in Resources */,
+				A1B2C3000000000000000037 /* dictionnaire_fr.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C300000000000000004D /* Resources */ = {
+		A1B2C3000000000000000051 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C300000000000000003A /* Assets.xcassets in Resources */,
+				A1B2C300000000000000003E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A1B2C3000000000000000043 /* Sources */ = {
+		A1B2C3000000000000000047 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C300000000000000001F /* UniclavApp.swift in Sources */,
-				A1B2C3000000000000000020 /* ContentView.swift in Sources */,
-				A1B2C3000000000000000021 /* WiktionaryClient.swift in Sources */,
-				A1B2C3000000000000000022 /* DictionaryUpdate.swift in Sources */,
-				A1B2C3000000000000000023 /* KeyboardSettings.swift in Sources */,
-				A1B2C3000000000000000024 /* LetterGroups.swift in Sources */,
-				A1B2C3000000000000000025 /* DictionaryStore.swift in Sources */,
-				A1B2C3000000000000000026 /* PendingWords.swift in Sources */,
-				A1B2C3000000000000000027 /* PredictionEngine.swift in Sources */,
+				A1B2C3000000000000000020 /* UniclavApp.swift in Sources */,
+				A1B2C3000000000000000021 /* ContentView.swift in Sources */,
+				A1B2C3000000000000000022 /* WiktionaryClient.swift in Sources */,
+				A1B2C3000000000000000023 /* DictionaryUpdate.swift in Sources */,
+				A1B2C3000000000000000024 /* KeyboardSettings.swift in Sources */,
+				A1B2C3000000000000000025 /* Palette.swift in Sources */,
+				A1B2C3000000000000000026 /* LetterGroups.swift in Sources */,
+				A1B2C3000000000000000027 /* DictionaryStore.swift in Sources */,
+				A1B2C3000000000000000028 /* PendingWords.swift in Sources */,
+				A1B2C3000000000000000029 /* PredictionEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C3000000000000000048 /* Sources */ = {
+		A1B2C300000000000000004C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C300000000000000002A /* KeyboardViewController.swift in Sources */,
-				A1B2C300000000000000002B /* KeyboardView.swift in Sources */,
-				A1B2C300000000000000002C /* KeyButton.swift in Sources */,
-				A1B2C300000000000000002D /* AccentPopupView.swift in Sources */,
-				A1B2C300000000000000002E /* Key.swift in Sources */,
-				A1B2C300000000000000002F /* KeyboardSettings.swift in Sources */,
-				A1B2C3000000000000000030 /* LetterGroups.swift in Sources */,
-				A1B2C3000000000000000031 /* DictionaryStore.swift in Sources */,
-				A1B2C3000000000000000032 /* PendingWords.swift in Sources */,
-				A1B2C3000000000000000033 /* PredictionEngine.swift in Sources */,
+				A1B2C300000000000000002C /* KeyboardViewController.swift in Sources */,
+				A1B2C300000000000000002D /* KeyboardView.swift in Sources */,
+				A1B2C300000000000000002E /* KeyButton.swift in Sources */,
+				A1B2C300000000000000002F /* AccentPopupView.swift in Sources */,
+				A1B2C3000000000000000030 /* Key.swift in Sources */,
+				A1B2C3000000000000000031 /* KeyboardSettings.swift in Sources */,
+				A1B2C3000000000000000032 /* Palette.swift in Sources */,
+				A1B2C3000000000000000033 /* LetterGroups.swift in Sources */,
+				A1B2C3000000000000000034 /* DictionaryStore.swift in Sources */,
+				A1B2C3000000000000000035 /* PendingWords.swift in Sources */,
+				A1B2C3000000000000000036 /* PredictionEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1B2C300000000000000004B /* Sources */ = {
+		A1B2C300000000000000004F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1B2C3000000000000000035 /* UniclavWatchApp.swift in Sources */,
-				A1B2C3000000000000000036 /* PhraseListView.swift in Sources */,
-				A1B2C3000000000000000037 /* PhraseDisplayView.swift in Sources */,
-				A1B2C3000000000000000038 /* PhraseLibrary.swift in Sources */,
-				A1B2C3000000000000000039 /* Speaker.swift in Sources */,
+				A1B2C3000000000000000038 /* UniclavWatchApp.swift in Sources */,
+				A1B2C3000000000000000039 /* PhraseListView.swift in Sources */,
+				A1B2C300000000000000003A /* PhraseDisplayView.swift in Sources */,
+				A1B2C300000000000000003B /* PhraseLibrary.swift in Sources */,
+				A1B2C300000000000000003C /* Speaker.swift in Sources */,
+				A1B2C300000000000000003D /* Palette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A1B2C300000000000000005D /* PBXTargetDependency */ = {
+		A1B2C3000000000000000061 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A1B2C300000000000000005A /* UniclavKeyboard */;
-			targetProxy = A1B2C300000000000000005C /* PBXContainerItemProxy */;
+			target = A1B2C300000000000000005E /* UniclavKeyboard */;
+			targetProxy = A1B2C3000000000000000060 /* PBXContainerItemProxy */;
 		};
-		A1B2C300000000000000005F /* PBXTargetDependency */ = {
+		A1B2C3000000000000000063 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A1B2C300000000000000005B /* UniclavWatch */;
-			targetProxy = A1B2C300000000000000005E /* PBXContainerItemProxy */;
+			target = A1B2C300000000000000005F /* UniclavWatch */;
+			targetProxy = A1B2C3000000000000000062 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		A1B2C300000000000000004E /* Debug */ = {
+		A1B2C3000000000000000052 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -450,7 +458,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C300000000000000004F /* Release */ = {
+		A1B2C3000000000000000053 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -481,7 +489,7 @@
 			};
 			name = Release;
 		};
-		A1B2C3000000000000000051 /* Debug */ = {
+		A1B2C3000000000000000055 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -498,7 +506,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C3000000000000000052 /* Release */ = {
+		A1B2C3000000000000000056 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -515,7 +523,7 @@
 			};
 			name = Release;
 		};
-		A1B2C3000000000000000054 /* Debug */ = {
+		A1B2C3000000000000000058 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "UniclavKeyboard/UniclavKeyboard.entitlements";
@@ -533,7 +541,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C3000000000000000055 /* Release */ = {
+		A1B2C3000000000000000059 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "UniclavKeyboard/UniclavKeyboard.entitlements";
@@ -551,7 +559,7 @@
 			};
 			name = Release;
 		};
-		A1B2C3000000000000000057 /* Debug */ = {
+		A1B2C300000000000000005B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -571,7 +579,7 @@
 			};
 			name = Debug;
 		};
-		A1B2C3000000000000000058 /* Release */ = {
+		A1B2C300000000000000005C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -594,38 +602,38 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1B2C3000000000000000050 /* Build configuration list for PBXProject "Uniclav" */ = {
+		A1B2C3000000000000000054 /* Build configuration list for PBXProject "Uniclav" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C300000000000000004E /* Debug */,
-				A1B2C300000000000000004F /* Release */,
+				A1B2C3000000000000000052 /* Debug */,
+				A1B2C3000000000000000053 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1B2C3000000000000000053 /* Build configuration list for PBXNativeTarget "Uniclav" */ = {
+		A1B2C3000000000000000057 /* Build configuration list for PBXNativeTarget "Uniclav" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C3000000000000000051 /* Debug */,
-				A1B2C3000000000000000052 /* Release */,
+				A1B2C3000000000000000055 /* Debug */,
+				A1B2C3000000000000000056 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1B2C3000000000000000056 /* Build configuration list for PBXNativeTarget "UniclavKeyboard" */ = {
+		A1B2C300000000000000005A /* Build configuration list for PBXNativeTarget "UniclavKeyboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C3000000000000000054 /* Debug */,
-				A1B2C3000000000000000055 /* Release */,
+				A1B2C3000000000000000058 /* Debug */,
+				A1B2C3000000000000000059 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1B2C3000000000000000059 /* Build configuration list for PBXNativeTarget "UniclavWatch" */ = {
+		A1B2C300000000000000005D /* Build configuration list for PBXNativeTarget "UniclavWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1B2C3000000000000000057 /* Debug */,
-				A1B2C3000000000000000058 /* Release */,
+				A1B2C300000000000000005B /* Debug */,
+				A1B2C300000000000000005C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
