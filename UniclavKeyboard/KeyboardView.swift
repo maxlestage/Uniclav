@@ -21,8 +21,17 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private var accentPopup: AccentPopupView?
 
     private var handSide = KeyboardSettings.handSide
+    private var layout = KeyboardSettings.layout
     private var scale = KeyboardSettings.keyboardScale
     private var keyHeight = KeyboardSettings.keyHeight
+
+    /// Saisie groupée : suite des touches frappées pour le mot en cours…
+    private var pendingSignature = ""
+    /// …et le texte actuellement inséré dans le champ pour ce mot, qui sera
+    /// remplacé à chaque nouvelle touche.
+    private var pendingText = ""
+    /// Majuscule demandée au moment de la première touche du mot.
+    private var pendingCapitalized = false
 
     // MARK: - Sous-vues
 
@@ -38,6 +47,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private static let rowSpacing: CGFloat = 8
     private static let keySpacing: CGFloat = 5
     private static let outerPadding: CGFloat = 4
+    /// Largeur des touches de service de la rangée basse, en fraction de la
+    /// rangée ; l'espace absorbe ce qui reste.
+    private static let serviceKeyWidth: CGFloat = 0.14
 
     static var preferredHeight: CGFloat {
         suggestionBarHeight + 4 * KeyboardSettings.keyHeight + 3 * rowSpacing + 2 * outerPadding + 8
@@ -96,8 +108,15 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Relit les réglages partagés et reconstruit le clavier.
     func reloadConfiguration() {
         handSide = KeyboardSettings.handSide
+        layout = KeyboardSettings.layout
         scale = KeyboardSettings.keyboardScale
         keyHeight = KeyboardSettings.keyHeight
+        // Le champ de saisie a pu changer entre deux apparitions : on repart
+        // d'un mot vide plutôt que d'effacer du texte qui ne nous appartient
+        // plus.
+        pendingSignature = ""
+        pendingText = ""
+        pendingCapitalized = false
         rebuildRows()
         layoutContainer()
         restyle()
@@ -129,57 +148,34 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         rowStacks = []
         shiftButton = nil
 
-        var referenceKey: KeyButton?
-        for row in currentLayer.rows {
+        for row in currentLayer.rows(layout: layout) {
             let rowStack = UIStackView()
             rowStack.axis = .horizontal
             rowStack.spacing = Self.keySpacing
-            rowStack.distribution = .fill
             rowStack.heightAnchor.constraint(equalToConstant: keyHeight).isActive = true
 
-            var rowUnitKeys: [KeyButton] = []
+            // Une rangée sans espace répartit ses touches à parts égales ;
+            // celle qui porte l'espace lui laisse la place restante.
+            let hasSpace = row.contains(.space)
+            rowStack.distribution = hasSpace ? .fill : .fillEqually
+
             for key in row {
                 let button = KeyButton(key: key)
                 configureActions(for: button)
                 rowStack.addArrangedSubview(button)
-                switch key {
-                case .character:
-                    rowUnitKeys.append(button)
-                    if referenceKey == nil { referenceKey = button }
-                case .shift:
-                    shiftButton = button
-                default:
-                    break
-                }
+                if key == .shift { shiftButton = button }
             }
             containerStack.addArrangedSubview(rowStack)
             rowStacks.append(rowStack)
 
-            // Toutes les touches « lettre » d'une rangée ont la même largeur.
-            if let first = rowUnitKeys.first {
-                for other in rowUnitKeys.dropFirst() {
-                    other.widthAnchor.constraint(equalTo: first.widthAnchor).isActive = true
-                }
-            }
-        }
-
-        // Largeurs des touches spéciales, relatives à une touche lettre.
-        guard let reference = referenceKey else { return }
-        for rowStack in rowStacks {
+            guard hasSpace else { continue }
             for case let button as KeyButton in rowStack.arrangedSubviews {
-                switch button.key {
-                case .shift, .delete, .numbers, .letters, .symbols:
-                    button.widthAnchor.constraint(equalTo: reference.widthAnchor, multiplier: 1.35).isActive = true
-                case .globe:
-                    button.widthAnchor.constraint(equalTo: reference.widthAnchor, multiplier: 1.1).isActive = true
-                case .ret:
-                    button.widthAnchor.constraint(equalTo: reference.widthAnchor, multiplier: 1.9).isActive = true
-                case .space, .character:
-                    break // l'espace s'étire, les lettres sont déjà contraintes
-                }
-                if case .space = button.key {
+                if button.key == .space {
                     button.setContentHuggingPriority(.init(1), for: .horizontal)
                     button.setContentCompressionResistancePriority(.init(1), for: .horizontal)
+                } else {
+                    button.widthAnchor.constraint(equalTo: rowStack.widthAnchor,
+                                                  multiplier: Self.serviceKeyWidth).isActive = true
                 }
             }
         }
@@ -238,21 +234,21 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// À appeler quand le texte du champ change : met à jour suggestions,
     /// majuscule automatique et libellés des touches.
     func updateFromContext() {
-        updateSuggestions()
+        // Pendant la frappe groupée, la barre et le champ sont pilotés par
+        // `refreshPending` : le contexte ne doit pas les contredire.
+        guard pendingSignature.isEmpty else { return }
+        showSuggestions(layout == .grouped ? [] : predictionEngine.suggestions(forPrefix: currentWord))
         applyAutoShiftIfNeeded()
     }
 
-    private func updateSuggestions() {
-        let suggestions = predictionEngine.suggestions(forPrefix: currentWord)
+    private func showSuggestions(_ words: [String]) {
         for (index, button) in suggestionButtons.enumerated() {
-            if index < suggestions.count {
-                button.setTitle(suggestions[index], for: .normal)
-                button.isHidden = false
-                button.accessibilityLabel = "Suggestion : \(suggestions[index])"
-            } else {
-                button.setTitle(nil, for: .normal)
-                button.isHidden = suggestions.isEmpty ? false : true
-            }
+            let word = index < words.count ? words[index] : nil
+            button.setTitle(word, for: .normal)
+            button.accessibilityLabel = word.map { "Suggestion : \($0)" }
+            // Les emplacements vides s'effacent sans déplacer les autres.
+            button.alpha = word == nil ? 0 : 1
+            button.isUserInteractionEnabled = word != nil
         }
     }
 
@@ -285,12 +281,16 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         let proxy = controller.textDocumentProxy
         switch button.key {
         case let .character(char):
+            commitPending()
             insertCharacter(char)
+        case let .letterGroup(index):
+            appendGroup(index)
         case .shift:
             handleShiftTap()
         case .space:
             handleSpaceTap()
         case .ret:
+            commitPending()
             learnCurrentWord()
             proxy.insertText("\n")
         case .numbers:
@@ -299,6 +299,8 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             switchLayer(to: .letters)
         case .symbols:
             switchLayer(to: .symbols)
+        case .switchLayout:
+            toggleLayout()
         case .delete, .globe:
             break // gérés séparément
         }
@@ -331,13 +333,18 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         let before = proxy.documentContextBeforeInput ?? ""
         // Double espace -> « . » suivi d'un espace, comme le clavier iOS.
         if now.timeIntervalSince(lastSpaceTap) < 0.45,
+           pendingSignature.isEmpty,
            before.hasSuffix(" "),
            let beforeSpace = before.dropLast().last,
            beforeSpace.isLetter || beforeSpace.isNumber {
             proxy.deleteBackward()
             proxy.insertText(". ")
         } else {
-            learnCurrentWord()
+            if pendingSignature.isEmpty {
+                learnCurrentWord()
+            } else {
+                commitPending()
+            }
             proxy.insertText(" ")
         }
         lastSpaceTap = now
@@ -350,26 +357,98 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func switchLayer(to layer: KeyboardLayer) {
+        commitPending()
         currentLayer = layer
         rebuildRows()
         restyle()
+    }
+
+    private func toggleLayout() {
+        commitPending()
+        layout = layout == .azerty ? .grouped : .azerty
+        KeyboardSettings.layout = layout
+        currentLayer = .letters
+        rebuildRows()
+        restyle()
+        showSuggestions([])
+    }
+
+    // MARK: - Saisie groupée
+
+    /// Ajoute une touche au mot en cours et remplace, dans le champ, le mot
+    /// affiché par le meilleur candidat du dictionnaire.
+    private func appendGroup(_ index: Int) {
+        if pendingSignature.isEmpty {
+            pendingCapitalized = shiftState != .off
+        }
+        pendingSignature.append(String(index))
+        refreshPending()
+        if shiftState == .on {
+            shiftState = .off
+            updateShiftAppearance()
+        }
+    }
+
+    private func refreshPending() {
+        let candidates = predictionEngine.groupedCandidates(forSignature: pendingSignature)
+        // Aucun mot connu : on montre au moins la première lettre de chaque
+        // touche, pour que le champ réagisse à la frappe.
+        let shown = candidates.isEmpty ? [LetterGroups.literal(for: pendingSignature)] : candidates
+        let display = shown.map(capitalizedIfNeeded)
+        replacePending(with: display[0])
+        showSuggestions(display)
+    }
+
+    private func capitalizedIfNeeded(_ word: String) -> String {
+        guard pendingCapitalized, let first = word.first else { return word }
+        return String(first).uppercased(with: Locale(identifier: "fr_FR")) + word.dropFirst()
+    }
+
+    private func replacePending(with text: String) {
+        let proxy = controller.textDocumentProxy
+        for _ in 0..<pendingText.count {
+            proxy.deleteBackward()
+        }
+        if !text.isEmpty {
+            proxy.insertText(text)
+        }
+        pendingText = text
+    }
+
+    /// Fige le mot en cours : il devient du texte ordinaire et alimente
+    /// l'apprentissage.
+    private func commitPending() {
+        guard !pendingSignature.isEmpty else { return }
+        if !pendingText.isEmpty {
+            predictionEngine.learn(word: pendingText)
+        }
+        pendingSignature = ""
+        pendingText = ""
+        pendingCapitalized = false
     }
 
     @objc private func suggestionTapped(_ button: UIButton) {
         guard let word = button.title(for: .normal), !word.isEmpty else { return }
         UIDevice.current.playInputClick()
         let proxy = controller.textDocumentProxy
-        let typed = currentWord
-        for _ in 0..<typed.count {
-            proxy.deleteBackward()
+
+        if pendingSignature.isEmpty {
+            let typed = currentWord
+            for _ in 0..<typed.count {
+                proxy.deleteBackward()
+            }
+            // Préserve la majuscule initiale tapée par l'utilisateur.
+            var final = word
+            if let first = typed.first, first.isUppercase {
+                final = String(word.prefix(1)).uppercased(with: Locale(identifier: "fr_FR")) + word.dropFirst()
+            }
+            proxy.insertText(final + " ")
+            predictionEngine.learn(word: final)
+        } else {
+            replacePending(with: word)
+            commitPending()
+            proxy.insertText(" ")
         }
-        // Préserve la majuscule initiale tapée par l'utilisateur.
-        var final = word
-        if let first = typed.first, first.isUppercase {
-            final = word.prefix(1).uppercased(with: Locale(identifier: "fr_FR")) + word.dropFirst()
-        }
-        proxy.insertText(final + " ")
-        predictionEngine.learn(word: final)
         updateFromContext()
     }
 
@@ -383,8 +462,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
     @objc private func deleteTouchDown() {
         UIDevice.current.playInputClick()
-        controller.textDocumentProxy.deleteBackward()
-        updateFromContext()
+        performDelete()
         deleteTimer?.invalidate()
         // Après un délai, efface en continu — utile à une main pour
         // éviter les frappes répétées.
@@ -393,11 +471,27 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         }
     }
 
+    /// En saisie groupée, effacer retire la dernière touche frappée et
+    /// recalcule le mot ; le texte validé n'est atteint qu'ensuite.
+    private func performDelete() {
+        if pendingSignature.isEmpty {
+            controller.textDocumentProxy.deleteBackward()
+        } else {
+            pendingSignature.removeLast()
+            if pendingSignature.isEmpty {
+                replacePending(with: "")
+                pendingCapitalized = false
+                showSuggestions([])
+            } else {
+                refreshPending()
+            }
+        }
+        updateFromContext()
+    }
+
     private func startRepeatingDelete() {
         deleteTimer = Timer.scheduledTimer(withTimeInterval: 0.09, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            self.controller.textDocumentProxy.deleteBackward()
-            self.updateFromContext()
+            self?.performDelete()
         }
     }
 

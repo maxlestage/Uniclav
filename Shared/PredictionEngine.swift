@@ -8,8 +8,14 @@ final class PredictionEngine {
     private var words: [String] = []
     /// Version normalisée (minuscules, sans accents) alignée sur `words`.
     private var normalizedWords: [String] = []
+    /// Signature de saisie groupée de chaque mot, alignée sur `words` ; nil
+    /// pour les mots contenant un caractère hors des huit groupes.
+    private var signatures: [String?] = []
     /// Mots appris : mot -> nombre d'utilisations.
     private var userWords: [String: Int] = [:]
+    /// Formes normalisées du dictionnaire, pour reconnaître d'un coup si un
+    /// mot y figure déjà.
+    private var knownNormalized: Set<String> = []
 
     private let userWordMinLength = 3
     private let saveQueue = DispatchQueue(label: "com.maxlestage.uniclav.prediction", qos: .utility)
@@ -20,15 +26,12 @@ final class PredictionEngine {
     }
 
     private func loadDictionary() {
-        guard let url = Bundle(for: PredictionEngine.self).url(forResource: "dictionnaire_fr", withExtension: "txt"),
-              let content = try? String(contentsOf: url, encoding: .utf8) else {
-            return
-        }
-        words = content
-            .split(separator: "\n")
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty && !$0.hasPrefix("#") }
+        // Version enrichie par l'application si elle existe, sinon celle
+        // livrée avec l'app.
+        words = DictionaryStore.loadWords()
         normalizedWords = words.map { Self.normalize($0) }
+        signatures = words.map { LetterGroups.signature(of: $0) }
+        knownNormalized = Set(normalizedWords)
     }
 
     /// Minuscules et suppression des diacritiques, pour qu'un préfixe tapé
@@ -69,6 +72,40 @@ final class PredictionEngine {
         return results
     }
 
+    /// Mots correspondant à une suite de touches groupées, du plus probable
+    /// au moins probable. Les correspondances exactes (même longueur que la
+    /// frappe) passent avant les mots plus longs, qui valent alors complétion.
+    func groupedCandidates(forSignature signature: String, limit: Int = 3) -> [String] {
+        guard !signature.isEmpty else { return [] }
+
+        var exact: [String] = []
+        var longer: [String] = []
+        var seen = Set<String>()
+
+        func consider(_ word: String, _ wordSignature: String) {
+            guard wordSignature.hasPrefix(signature),
+                  seen.insert(Self.normalize(word)).inserted else { return }
+            if wordSignature.count == signature.count {
+                exact.append(word)
+            } else {
+                longer.append(word)
+            }
+        }
+
+        // Les mots appris passent devant, comme pour les suggestions.
+        for (word, _) in userWords.sorted(by: { $0.value > $1.value }) {
+            if let wordSignature = LetterGroups.signature(of: word) {
+                consider(word, wordSignature)
+            }
+        }
+        for (index, wordSignature) in signatures.enumerated() {
+            if let wordSignature = wordSignature {
+                consider(words[index], wordSignature)
+            }
+        }
+        return Array((exact + longer).prefix(limit))
+    }
+
     /// Mémorise un mot validé par l'utilisateur (espace, ponctuation ou
     /// suggestion choisie) pour améliorer les prédictions suivantes.
     func learn(word rawWord: String) {
@@ -77,6 +114,11 @@ final class PredictionEngine {
               word.rangeOfCharacter(from: CharacterSet.decimalDigits) == nil else { return }
 
         let normalized = Self.normalize(word)
+        // Mot absent du dictionnaire : l'application ira demander au
+        // Wiktionnaire s'il est français, et l'ajoutera pour de bon.
+        if !knownNormalized.contains(normalized) {
+            PendingWords.enqueue(word)
+        }
         // Inutile d'apprendre un mot déjà en tête du dictionnaire.
         if let index = normalizedWords.firstIndex(of: normalized), index < 200 { return }
 

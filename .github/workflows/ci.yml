@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build:
-    name: Compilation iOS
+    name: Compilation iOS et watchOS
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v5
@@ -24,15 +24,28 @@ jobs:
           sudo xcode-select -s "$latest"
           xcodebuild -version
 
-      - name: Compiler (simulateur iOS)
+      # Pas de -sdk ici : le schéma embarque une cible watchOS, chaque cible
+      # doit pouvoir résoudre son propre SDK.
+      - name: Compiler l'app iOS, l'extension clavier et la montre embarquée
         run: |
           set -o pipefail
           xcodebuild build \
             -project Uniclav.xcodeproj \
             -scheme Uniclav \
             -configuration Debug \
-            -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Compiler l'app montre seule
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Uniclav.xcodeproj \
+            -scheme UniclavWatch \
+            -configuration Debug \
+            -destination 'generic/platform=watchOS Simulator' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
