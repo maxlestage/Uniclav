@@ -85,12 +85,17 @@ dont Xcode dérive toutes les tailles requises :
 - `Uniclav/Assets.xcassets` pour l'iPhone ;
 - `UniclavWatch/Assets.xcassets` pour la montre.
 
-Le motif est un éventail de touches qui s'ouvre vers le bas et la gauche,
-évoquant la zone atteignable d'une seule main, avec une touche ambre pour la
-suggestion de mot. La version montre est resserrée à cinq touches : **watchOS
-masque l'icône en cercle**, une composition ancrée dans un coin y serait
-tronquée. Les deux images centrent le *centre de masse* du motif, et non sa
-boîte englobante, sans quoi l'éventail penche visiblement.
+Le motif est une touche de clavier unique, portant un A dessiné au trait.
+Un seul élément, très grand : c'est ce qui reste lisible à 40 px sur un écran
+d'accueil, là où une grille de touches devient une texture indistincte.
+
+Sur iPhone, deux touches fantômes traînent vers le bas à gauche — la course de
+la main qui vient chercher la touche. Sur la montre, cette traînée disparaît :
+**watchOS masque l'icône en cercle** et l'aurait tronquée, la touche seule y
+tient parfaitement.
+
+Le A est tracé par trois segments à extrémités arrondies, sans dépendance à
+une police : le rendu est identique partout.
 
 Pour la remplacer, déposez votre propre PNG **opaque et sans canal alpha** de
 1024 × 1024 px sous le nom `AppIcon-1024.png` : l'App Store refuse les icônes
