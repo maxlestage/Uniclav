@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 
 struct ContentView: View {
+    @EnvironmentObject private var updater: DictionaryUpdater
+    @State private var autoUpdate = KeyboardSettings.autoUpdateDictionary
     @State private var handSide = KeyboardSettings.handSide
     @State private var layout = KeyboardSettings.layout
     @State private var keyboardScale = KeyboardSettings.keyboardScale
@@ -18,6 +20,7 @@ struct ContentView: View {
                 handSection
                 sizeSection
                 displaySection
+                dictionarySection
                 testSection
                 aboutSection
             }
@@ -110,6 +113,64 @@ struct ContentView: View {
         }
     }
 
+    private var dictionarySection: some View {
+        Section {
+            HStack {
+                Text("Mots connus")
+                Spacer()
+                Text(wordCountText).foregroundStyle(.secondary)
+            }
+            HStack {
+                Text("Dernière mise à jour")
+                Spacer()
+                Text(lastUpdateText).foregroundStyle(.secondary)
+            }
+            Toggle("Mise à jour automatique", isOn: $autoUpdate)
+                .onChange(of: autoUpdate) { KeyboardSettings.autoUpdateDictionary = $0 }
+
+            Button {
+                Task { await updater.update(force: true) }
+            } label: {
+                if updater.status == .running {
+                    HStack { ProgressView(); Text("Mise à jour…") }
+                } else {
+                    Label("Mettre à jour maintenant", systemImage: "arrow.clockwise")
+                }
+            }
+            .disabled(updater.status == .running)
+
+            if case let .done(added, _) = updater.status {
+                Text(added == 0
+                     ? "Dictionnaire déjà à jour."
+                     : "\(added) mot\(added > 1 ? "s" : "") ajouté\(added > 1 ? "s" : "") depuis le Wiktionnaire.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            if case let .failed(message) = updater.status {
+                Text(message)
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+            }
+        } header: {
+            Text("Dictionnaire")
+        } footer: {
+            Text("Les mots que vous écrivez et que le clavier ne connaît pas sont vérifiés auprès du Wiktionnaire, puis ajoutés avec leurs accents. Le clavier lui-même n'accède jamais au réseau : c'est cette application qui télécharge, une fois par jour au plus.")
+        }
+    }
+
+    private var wordCountText: String {
+        let count = KeyboardSettings.dictionaryWordCount
+        return count > 0 ? "\(count)" : "dictionnaire livré"
+    }
+
+    private var lastUpdateText: String {
+        guard let date = KeyboardSettings.lastDictionaryUpdate else { return "jamais" }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "fr_FR")
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
     private var testSection: some View {
         Section {
             TextField("Essayez le clavier ici…", text: $testText, axis: .vertical)
@@ -135,5 +196,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView().environmentObject(DictionaryUpdater())
 }

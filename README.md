@@ -151,13 +151,60 @@ coexistent.
 Le script qui mesure ces collisions n'est pas versionné ; la répartition des
 lettres se modifie dans `Shared/LetterGroups.swift`.
 
-## Enrichir le dictionnaire
+## Dictionnaire et Wiktionnaire
 
-`Shared/dictionnaire_fr.txt` contient un mot par ligne, du plus fréquent au
-moins fréquent (les lignes commençant par `#` sont ignorées). Vous pouvez le
-remplacer par une liste de fréquence plus complète, par exemple issue de
-[Lexique.org](http://www.lexique.org/) — vérifiez la licence de la liste
-utilisée avant distribution.
+`Shared/dictionnaire_fr.txt` est la base livrée avec l'app : un mot par ligne,
+du plus fréquent au moins fréquent (les lignes commençant par `#` sont
+ignorées). L'application l'enrichit ensuite depuis le
+[Wiktionnaire francophone](https://fr.wiktionary.org) et dépose le résultat
+dans l'App Group, d'où le clavier le relit.
+
+### Qui accède au réseau
+
+**Le clavier, jamais.** `RequestsOpenAccess` reste à `false` : une extension de
+clavier autorisée à émettre des requêtes pourrait aussi émettre ce qu'on tape,
+et ce clavier sert notamment à écrire des choses médicales. C'est
+l'application, et elle seule, qui télécharge ; le clavier lit un fichier local.
+`WiktionaryClient` et `DictionaryUpdate` vivent donc dans `Uniclav/`, hors de
+la cible de l'extension.
+
+### Ce que le Wiktionnaire apporte, et ce qu'il n'apporte pas
+
+Il apporte la **couverture** : des millions d'entrées, les noms propres, les
+formes fléchies, l'orthographe accentuée exacte.
+
+Il n'apporte **aucune fréquence d'usage** — c'est un dictionnaire, pas un
+corpus. Or la désambiguïsation des grosses touches repose entièrement sur le
+classement par fréquence : sans lui, rien ne dit que « vous » doit passer avant
+« tous ». Les mots venus du Wiktionnaire sont donc ajoutés **en fin de liste**,
+sans jamais déranger le classement de la base d'origine ; ce sont vos propres
+usages, comptés localement, qui les font remonter.
+
+### Deux sources, dans cet ordre
+
+1. **Le vocabulaire de base** du Wiktionnaire (la liste des mots que tous les
+   Wiktionnaires devraient avoir), soit un millier de mots obtenus en une seule
+   requête. Fusionné une fois pour toutes.
+2. **Les mots que le clavier n'a pas reconnus.** L'extension les note dans
+   l'App Group sans pouvoir les vérifier ; l'application demande au
+   Wiktionnaire s'ils sont français et, si oui, les ajoute définitivement avec
+   leurs accents. C'est la source qui compte le plus : ce sont les mots que
+   cette personne écrit réellement, noms propres compris — précisément ce que
+   les grosses touches ne savaient pas deviner.
+
+### Rythme des mises à jour
+
+Au lancement de l'app, puis par réveil en arrière-plan (`BGAppRefreshTask`),
+**une fois par jour au plus**. Trois raisons de ne pas faire davantage :
+l'API de Wikimédia limite le débit et renvoie une erreur 429 au bout de
+quelques requêtes rapprochées ; un dictionnaire évolue lentement ; et iOS
+décide seul du moment réel des réveils en arrière-plan. Ce qui se met à jour
+en permanence, en revanche, c'est l'apprentissage personnel — il est local et
+prend effet au mot suivant.
+
+Une énumération complète du français est hors de portée d'un téléphone :
+plusieurs millions d'entrées, cinq cents par requête, sans marquage de langue
+exploitable. C'est pourquoi l'enrichissement est ciblé plutôt qu'exhaustif.
 
 ## Intégration continue
 
