@@ -74,3 +74,10 @@ moins fréquent (les lignes commençant par `#` sont ignorées). Vous pouvez le
 remplacer par une liste de fréquence plus complète, par exemple issue de
 [Lexique.org](http://www.lexique.org/) — vérifiez la licence de la liste
 utilisée avant distribution.
+
+## Intégration continue
+
+Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) compile le
+projet à chaque push et pull request : il installe XcodeGen, génère
+`Uniclav.xcodeproj` puis compile le schéma `Uniclav` (application + extension
+clavier) pour le simulateur iOS, sans signature de code.

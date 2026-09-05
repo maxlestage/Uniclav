@@ -13,7 +13,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private unowned let controller: KeyboardViewController
     private let predictionEngine = PredictionEngine()
 
-    private var layer_: KeyboardLayer = .letters
+    private var currentLayer: KeyboardLayer = .letters
     private var shiftState: ShiftState = .off
     private var lastShiftTap: Date = .distantPast
     private var lastSpaceTap: Date = .distantPast
@@ -130,7 +130,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         shiftButton = nil
 
         var referenceKey: KeyButton?
-        for row in layer_.rows {
+        for row in currentLayer.rows {
             let rowStack = UIStackView()
             rowStack.axis = .horizontal
             rowStack.spacing = Self.keySpacing
@@ -257,7 +257,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func applyAutoShiftIfNeeded() {
-        guard shiftState != .locked, layer_ == .letters else { return }
+        guard shiftState != .locked, currentLayer == .letters else { return }
         let before = controller.textDocumentProxy.documentContextBeforeInput ?? ""
         let trimmed = before.trimmingCharacters(in: .whitespacesAndNewlines)
         let shouldCapitalize = trimmed.isEmpty
@@ -350,7 +350,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func switchLayer(to layer: KeyboardLayer) {
-        layer_ = layer
+        currentLayer = layer
         rebuildRows()
         restyle()
     }

@@ -70,3 +70,13 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.maxlestage.uniclav.keyboard
         TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  Uniclav:
+    build:
+      targets:
+        Uniclav: all
+        UniclavKeyboard: all
+    run:
+      config: Debug
+    archive:
+      config: Release

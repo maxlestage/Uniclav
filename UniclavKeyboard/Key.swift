@@ -37,21 +37,21 @@ enum KeyboardLayer {
             return [
                 ["a", "z", "e", "r", "t", "y", "u", "i", "o", "p"].map(Key.character),
                 ["q", "s", "d", "f", "g", "h", "j", "k", "l", "m"].map(Key.character),
-                [.shift] + ["w", "x", "c", "v", "b", "n", "'"].map(Key.character) + [.delete],
+                [Key.shift] + ["w", "x", "c", "v", "b", "n", "'"].map(Key.character) + [Key.delete],
                 [.numbers, .globe, .space, .ret],
             ]
         case .numbers:
             return [
                 ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map(Key.character),
                 ["-", "/", ":", ";", "(", ")", "€", "&", "@", "\""].map(Key.character),
-                [.symbols] + [".", ",", "?", "!", "'"].map(Key.character) + [.delete],
+                [Key.symbols] + [".", ",", "?", "!", "'"].map(Key.character) + [Key.delete],
                 [.letters, .globe, .space, .ret],
             ]
         case .symbols:
             return [
                 ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="].map(Key.character),
                 ["_", "\\", "|", "~", "<", ">", "$", "£", "¥", "·"].map(Key.character),
-                [.numbers] + [".", ",", "?", "!", "'"].map(Key.character) + [.delete],
+                [Key.numbers] + [".", ",", "?", "!", "'"].map(Key.character) + [Key.delete],
                 [.letters, .globe, .space, .ret],
             ]
         }
