@@ -28,6 +28,7 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 ```
 Uniclav.xcodeproj/        Projet Xcode (versionné)
 Uniclav/                  Application conteneur (SwiftUI) : réglages + activation
+  Assets.xcassets         Icône de l'app (1024 px, déclinée par Xcode)
 UniclavKeyboard/          Extension clavier (UIKit)
   KeyboardViewController  Point d'entrée de l'extension
   KeyboardView            Disposition à une main, suggestions, gestion des touches
@@ -68,6 +69,22 @@ Dans Xcode :
 1. **Réglages** › **Général** › **Clavier** › **Claviers** › **Ajouter un
    clavier…** › **Uniclav**.
 2. Dans n'importe quelle app, maintenir le globe 🌐 et choisir **Uniclav**.
+
+## Icône
+
+`Uniclav/Assets.xcassets/AppIcon.appiconset` contient une seule image de
+1024 × 1024 px ; Xcode en dérive automatiquement toutes les tailles requises
+(écran d'accueil, réglages, Spotlight). Le motif est un éventail de touches
+ancré en bas à droite, qui évoque la zone atteignable d'une seule main, avec
+une touche ambre pour la suggestion de mot.
+
+Pour la remplacer, déposez votre propre PNG **opaque et sans canal alpha** de
+1024 × 1024 px sous le nom `AppIcon-1024.png` : l'App Store refuse les icônes
+comportant de la transparence. N'arrondissez pas les angles, iOS applique
+lui-même son masque.
+
+L'extension clavier n'a pas d'icône propre : iOS affiche celle de
+l'application dans les réglages de clavier.
 
 ## Enrichir le dictionnaire
 
