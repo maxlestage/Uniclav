@@ -85,9 +85,11 @@ struct ContentView: View {
     }
 
     private var testSection: some View {
-        Section("Zone d'essai") {
+        Section {
             TextField("Essayez le clavier ici…", text: $testText, axis: .vertical)
                 .lineLimit(3...6)
+        } header: {
+            Text("Zone d'essai")
         } footer: {
             Text("Touchez le champ puis maintenez le globe 🌐 pour choisir Uniclav.")
         }
