@@ -31,7 +31,7 @@ final class KeyButton: UIButton {
 
         let isSpecial: Bool
         switch key {
-        case .character, .space:
+        case .character, .space, .letterGroup:
             isSpecial = false
         default:
             isSpecial = true
@@ -55,6 +55,11 @@ final class KeyButton: UIButton {
         switch key {
         case .character:
             titleLabel?.font = .systemFont(ofSize: letterSize, weight: .regular)
+        case .letterGroup:
+            // « PQRS » doit tenir sans déborder d'une touche large.
+            titleLabel?.font = .systemFont(ofSize: largeLabels ? 21 : 18, weight: .semibold)
+            titleLabel?.adjustsFontSizeToFitWidth = true
+            titleLabel?.minimumScaleFactor = 0.6
         default:
             titleLabel?.font = .systemFont(ofSize: specialSize, weight: .medium)
         }
@@ -84,6 +89,8 @@ final class KeyButton: UIButton {
         case let .character(char):
             let title = uppercase ? char.uppercased(with: Locale(identifier: "fr_FR")) : char
             setTitle(title, for: .normal)
+        case let .letterGroup(index):
+            setTitle(LetterGroups.all[index].uppercased(), for: .normal)
         case .space:
             setTitle("espace", for: .normal)
         case .numbers:
@@ -100,6 +107,8 @@ final class KeyButton: UIButton {
             setImage(symbolImage("shift"), for: .normal)
         case .globe:
             setImage(symbolImage("globe"), for: .normal)
+        case .switchLayout:
+            setImage(symbolImage("square.grid.2x2"), for: .normal)
         }
     }
 
@@ -110,6 +119,8 @@ final class KeyButton: UIButton {
     private func configureAccessibility() {
         switch key {
         case let .character(char): accessibilityLabel = char
+        case let .letterGroup(index):
+            accessibilityLabel = "Lettres " + LetterGroups.all[index].uppercased()
         case .shift: accessibilityLabel = "Majuscule"
         case .delete: accessibilityLabel = "Effacer"
         case .space: accessibilityLabel = "Espace"
@@ -118,6 +129,7 @@ final class KeyButton: UIButton {
         case .letters: accessibilityLabel = "Lettres"
         case .symbols: accessibilityLabel = "Symboles"
         case .globe: accessibilityLabel = "Clavier suivant"
+        case .switchLayout: accessibilityLabel = "Changer de disposition"
         }
     }
 

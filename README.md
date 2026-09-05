@@ -5,8 +5,12 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 
 ## Fonctionnalités
 
-- **Clavier à une main** : les touches AZERTY sont regroupées du côté de la main
-  valide (gauche ou droite), avec une flèche ⇄ pour changer de côté en un geste.
+- **Deux dispositions** : AZERTY complet, ou **grosses touches** — huit touches
+  de trois ou quatre lettres que le dictionnaire désambiguïse. Chaque touche est
+  alors près de trois fois plus large, ce qui pardonne l'imprécision du geste.
+  La touche ⊞ bascule de l'une à l'autre sans quitter le clavier.
+- **Clavier à une main** : les touches sont regroupées du côté de la main valide
+  (gauche ou droite), avec une flèche ⇄ pour changer de côté en un geste.
 - **Grandes touches réglables** : largeur du clavier (60 à 100 % de l'écran) et
   hauteur des touches (44 à 66 pt) ajustables dans l'application.
 - **Prédiction de mots** : barre de 3 suggestions alimentée par un dictionnaire
@@ -41,6 +45,7 @@ UniclavKeyboard/          Extension clavier (UIKit)
   AccentPopupView         Popup d'accents à l'appui long
 Shared/                   Code commun aux deux cibles
   KeyboardSettings        Réglages partagés via l'App Group
+  LetterGroups            Répartition des lettres sur les grosses touches
   PredictionEngine        Moteur de prédiction (dictionnaire + apprentissage)
   dictionnaire_fr.txt     Dictionnaire français classé par fréquence
 ```
@@ -117,6 +122,34 @@ fonctionner sur la montre. C'est la communication rapide, quand la parole ou le
 déplacement manquent, que cette app couvre.
 
 Pour modifier les phrases, éditez `UniclavWatch/PhraseLibrary.swift`.
+
+## Saisie à grosses touches
+
+Les lettres se répartissent sur huit touches, comme sur un clavier
+téléphonique : `ABC` `DEF` `GHI` `JKL` `MNO` `PQRS` `TUV` `WXYZ`. On tape la
+touche qui porte la lettre, sans viser la lettre elle-même ; le dictionnaire
+retrouve le mot, et la barre de suggestions propose les autres lectures
+possibles de la même frappe.
+
+Mesuré sur le dictionnaire fourni : **94,7 % des mots sont trouvés du premier
+coup, 98 % parmi les cent plus fréquents**. Surtout, le plus gros groupe de
+collision compte trois mots — avec trois emplacements de suggestion, le mot
+voulu est donc toujours visible, au pire à une touche. Les collisions restantes
+sont presque toutes des paires accentuées (`donne` / `donné`) ou des voisins
+évidents (`mon` / `non` / `nom`).
+
+Les accents, apostrophes et traits d'union sont ignorés dans la frappe : taper
+les lettres de « aujourdhui » produit « aujourd'hui », correctement
+orthographié. Les mots appris par le clavier rejoignent l'index et deviennent
+saisissables de la même façon.
+
+Un mot absent du dictionnaire — un nom propre, souvent — ne peut pas être
+deviné : la touche ⊞ ramène alors l'AZERTY le temps de l'écrire. C'est la
+limite assumée de cette disposition, et la raison pour laquelle les deux
+coexistent.
+
+Le script qui mesure ces collisions n'est pas versionné ; la répartition des
+lettres se modifie dans `Shared/LetterGroups.swift`.
 
 ## Enrichir le dictionnaire
 

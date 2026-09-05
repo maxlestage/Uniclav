@@ -3,6 +3,7 @@ import UIKit
 
 struct ContentView: View {
     @State private var handSide = KeyboardSettings.handSide
+    @State private var layout = KeyboardSettings.layout
     @State private var keyboardScale = KeyboardSettings.keyboardScale
     @State private var keyHeight = KeyboardSettings.keyHeight
     @State private var largeLabels = KeyboardSettings.largeLabels
@@ -13,6 +14,7 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 activationSection
+                layoutSection
                 handSection
                 sizeSection
                 displaySection
@@ -41,6 +43,30 @@ struct ContentView: View {
             .padding(.vertical, 4)
         } footer: {
             Text("Une fois activé, maintenez le globe 🌐 sur n'importe quel clavier pour passer sur Uniclav.")
+        }
+    }
+
+    private var layoutSection: some View {
+        Section("Disposition") {
+            Picker("Disposition des lettres", selection: $layout) {
+                ForEach(KeyboardSettings.Layout.allCases) { option in
+                    Text(option.label).tag(option)
+                }
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: layout) { KeyboardSettings.layout = $0 }
+
+            Text(layout == .grouped
+                 ? "Huit grosses touches de trois ou quatre lettres. Vous tapez la touche qui porte la lettre, sans viser précisément : le dictionnaire retrouve le mot. Chaque touche est près de trois fois plus large qu'en AZERTY."
+                 : "Une lettre par touche, dix par rangée. Les touches sont étroites et demandent de la précision.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            if layout == .grouped {
+                Text("Si un mot reste introuvable — un nom propre, par exemple — la touche ⊞ du clavier ramène l'AZERTY le temps de l'écrire.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
@@ -100,7 +126,7 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Conçu pour la frappe à une main")
                     .font(.headline)
-                Text("• Clavier AZERTY regroupé à gauche ou à droite\n• Grandes touches espacées\n• Prédiction de mots en français avec apprentissage\n• Accents par appui long (e → é è ê ë)\n• Majuscule automatique en début de phrase")
+                Text("• Clavier regroupé à gauche ou à droite\n• Disposition à grosses touches, désambiguïsée par le dictionnaire\n• Prédiction de mots en français avec apprentissage\n• Accents par appui long (e → é è ê ë)\n• Majuscule automatique en début de phrase")
                     .font(.callout)
             }
             .padding(.vertical, 4)

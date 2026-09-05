@@ -5,6 +5,24 @@ import CoreGraphics
 enum KeyboardSettings {
     static let appGroupID = "group.com.maxlestage.uniclav"
 
+    /// Disposition des touches de lettres.
+    enum Layout: String, CaseIterable, Identifiable {
+        /// AZERTY complet : une lettre par touche, dix par rangée.
+        case azerty
+        /// Huit grosses touches de trois ou quatre lettres, désambiguïsées
+        /// par le dictionnaire.
+        case grouped
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .azerty: return "AZERTY complet"
+            case .grouped: return "Grosses touches"
+            }
+        }
+    }
+
     enum HandSide: String, CaseIterable, Identifiable {
         case left
         case right
@@ -25,11 +43,18 @@ enum KeyboardSettings {
 
     private enum Key {
         static let handSide = "handSide"
+        static let layout = "layout"
         static let keyboardScale = "keyboardScale"
         static let keyHeight = "keyHeight"
         static let largeLabels = "largeLabels"
         static let highContrast = "highContrast"
         static let userWords = "userWords"
+    }
+
+    /// Disposition des lettres.
+    static var layout: Layout {
+        get { Layout(rawValue: defaults.string(forKey: Key.layout) ?? "") ?? .azerty }
+        set { defaults.set(newValue.rawValue, forKey: Key.layout) }
     }
 
     /// Côté d'ancrage du clavier (main valide de l'utilisateur).

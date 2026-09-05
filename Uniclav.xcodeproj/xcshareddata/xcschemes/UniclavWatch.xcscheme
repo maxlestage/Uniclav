@@ -5,7 +5,7 @@
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1B2C300000000000000004E"
+               BlueprintIdentifier = "A1B2C3000000000000000051"
                BuildableName = "UniclavWatch.app"
                BlueprintName = "UniclavWatch"
                ReferencedContainer = "container:Uniclav.xcodeproj">
@@ -21,7 +21,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1B2C300000000000000004E"
+               BlueprintIdentifier = "A1B2C3000000000000000051"
                BuildableName = "UniclavWatch.app"
                BlueprintName = "UniclavWatch"
                ReferencedContainer = "container:Uniclav.xcodeproj">
@@ -32,7 +32,7 @@
       <BuildableProductRunnable runnableDebuggingMode = "0">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A1B2C300000000000000004E"
+               BlueprintIdentifier = "A1B2C3000000000000000051"
                BuildableName = "UniclavWatch.app"
                BlueprintName = "UniclavWatch"
                ReferencedContainer = "container:Uniclav.xcodeproj">
