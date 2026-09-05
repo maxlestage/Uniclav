@@ -26,7 +26,7 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 ## Structure du projet
 
 ```
-project.yml               Définition du projet (XcodeGen)
+Uniclav.xcodeproj/        Projet Xcode (versionné)
 Uniclav/                  Application conteneur (SwiftUI) : réglages + activation
 UniclavKeyboard/          Extension clavier (UIKit)
   KeyboardViewController  Point d'entrée de l'extension
@@ -39,14 +39,15 @@ Shared/                   Code commun aux deux cibles
   dictionnaire_fr.txt     Dictionnaire français classé par fréquence
 ```
 
+Les deux cibles partagent les fichiers de `Shared/` : `Info.plist` et
+`.entitlements` de chaque cible sont versionnés à côté de ses sources.
+
 ## Compilation
 
-Le projet Xcode est généré avec [XcodeGen](https://github.com/yonaskolb/XcodeGen) :
+Le projet Xcode est versionné directement — aucun outil de génération n'est
+nécessaire :
 
 ```bash
-brew install xcodegen
-cd Uniclav
-xcodegen generate
 open Uniclav.xcodeproj
 ```
 
@@ -55,11 +56,12 @@ Dans Xcode :
 1. Sélectionnez votre **équipe de développement** (Signing & Capabilities) pour
    les deux cibles `Uniclav` et `UniclavKeyboard`.
 2. Si votre identifiant d'équipe impose d'autres bundle IDs, changez-les dans
-   `project.yml` (ainsi que l'App Group `group.com.maxlestage.uniclav` dans
-   `project.yml` et `Shared/KeyboardSettings.swift`), puis relancez
-   `xcodegen generate`.
-3. Compilez et lancez la cible `Uniclav` sur un iPhone ou un simulateur
-   (iOS 16 minimum).
+   les réglages des deux cibles (ainsi que l'App Group
+   `group.com.maxlestage.uniclav`, présent dans les deux fichiers
+   `.entitlements` et dans `Shared/KeyboardSettings.swift`).
+3. Compilez et lancez le schéma `Uniclav` sur un iPhone ou un simulateur
+   (iOS 16 minimum). L'extension clavier est construite et embarquée
+   automatiquement comme dépendance.
 
 ## Activation du clavier sur l'appareil
 
@@ -78,6 +80,6 @@ utilisée avant distribution.
 ## Intégration continue
 
 Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) compile le
-projet à chaque push et pull request : il installe XcodeGen, génère
-`Uniclav.xcodeproj` puis compile le schéma `Uniclav` (application + extension
-clavier) pour le simulateur iOS, sans signature de code.
+projet à chaque push et pull request : il sélectionne l'Xcode le plus récent du
+runner puis compile le schéma `Uniclav` (application + extension clavier) pour
+le simulateur iOS, sans signature de code.

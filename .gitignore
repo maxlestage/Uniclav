@@ -1,5 +1,4 @@
-# Xcode (le projet est généré par `xcodegen generate`)
-*.xcodeproj/
+# Xcode
 xcuserdata/
 DerivedData/
 build/
@@ -13,9 +12,3 @@ build/
 
 # macOS
 .DS_Store
-
-# Fichiers générés par XcodeGen
-Uniclav/Info.plist
-Uniclav/Uniclav.entitlements
-UniclavKeyboard/Info.plist
-UniclavKeyboard/UniclavKeyboard.entitlements

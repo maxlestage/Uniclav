@@ -17,22 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # XcodeGen (Homebrew) écrit le projet au format 77, illisible par
-      # Xcode 15. On sélectionne donc l'Xcode le plus récent du runner.
       - name: Sélectionner la dernière version d'Xcode
         run: |
           latest=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
           echo "Xcode retenu : $latest"
           sudo xcode-select -s "$latest"
           xcodebuild -version
-
-      - name: Installer XcodeGen
-        run: brew install xcodegen
-
-      - name: Générer le projet Xcode
-        run: |
-          xcodegen generate
-          grep -m1 objectVersion Uniclav.xcodeproj/project.pbxproj
 
       - name: Compiler (simulateur iOS)
         run: |
