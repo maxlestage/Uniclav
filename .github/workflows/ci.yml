@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compilation iOS
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Sélectionner la dernière version d'Xcode
+        run: |
+          latest=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Xcode retenu : $latest"
+          sudo xcode-select -s "$latest"
+          xcodebuild -version
+
+      - name: Compiler (simulateur iOS)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Uniclav.xcodeproj \
+            -scheme Uniclav \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
