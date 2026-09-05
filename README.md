@@ -29,6 +29,11 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 Uniclav.xcodeproj/        Projet Xcode (versionné)
 Uniclav/                  Application conteneur (SwiftUI) : réglages + activation
   Assets.xcassets         Icône de l'app (1024 px, déclinée par Xcode)
+UniclavWatch/             App compagnon watchOS : phrases rapides
+  PhraseLibrary           Phrases classées par urgence
+  PhraseListView          Liste au poignet
+  PhraseDisplayView       Affichage plein écran + lecture vocale
+  Assets.xcassets         Icône montre (composition tenant dans le cercle)
 UniclavKeyboard/          Extension clavier (UIKit)
   KeyboardViewController  Point d'entrée de l'extension
   KeyboardView            Disposition à une main, suggestions, gestion des touches
@@ -61,8 +66,10 @@ Dans Xcode :
    `group.com.maxlestage.uniclav`, présent dans les deux fichiers
    `.entitlements` et dans `Shared/KeyboardSettings.swift`).
 3. Compilez et lancez le schéma `Uniclav` sur un iPhone ou un simulateur
-   (iOS 16 minimum). L'extension clavier est construite et embarquée
-   automatiquement comme dépendance.
+   (iOS 16 minimum). L'extension clavier et l'app montre sont construites et
+   embarquées automatiquement comme dépendances.
+4. Pour travailler sur la montre seule, choisissez le schéma `UniclavWatch`
+   (watchOS 9 minimum).
 
 ## Activation du clavier sur l'appareil
 
@@ -72,11 +79,18 @@ Dans Xcode :
 
 ## Icône
 
-`Uniclav/Assets.xcassets/AppIcon.appiconset` contient une seule image de
-1024 × 1024 px ; Xcode en dérive automatiquement toutes les tailles requises
-(écran d'accueil, réglages, Spotlight). Le motif est un éventail de touches
-ancré en bas à droite, qui évoque la zone atteignable d'une seule main, avec
-une touche ambre pour la suggestion de mot.
+Chaque application a son catalogue, avec une seule image de 1024 × 1024 px
+dont Xcode dérive toutes les tailles requises :
+
+- `Uniclav/Assets.xcassets` pour l'iPhone ;
+- `UniclavWatch/Assets.xcassets` pour la montre.
+
+Le motif est un éventail de touches qui s'ouvre vers le bas et la gauche,
+évoquant la zone atteignable d'une seule main, avec une touche ambre pour la
+suggestion de mot. La version montre est resserrée à cinq touches : **watchOS
+masque l'icône en cercle**, une composition ancrée dans un coin y serait
+tronquée. Les deux images centrent le *centre de masse* du motif, et non sa
+boîte englobante, sans quoi l'éventail penche visiblement.
 
 Pour la remplacer, déposez votre propre PNG **opaque et sans canal alpha** de
 1024 × 1024 px sous le nom `AppIcon-1024.png` : l'App Store refuse les icônes
@@ -85,6 +99,19 @@ lui-même son masque.
 
 L'extension clavier n'a pas d'icône propre : iOS affiche celle de
 l'application dans les réglages de clavier.
+
+## App montre
+
+`UniclavWatch` est une app compagnon watchOS : un tableau de phrases prêtes à
+l'emploi, classées par urgence (Urgent, Besoins, Échanges). Une phrase touchée
+s'affiche en grand — pour être montrée à un tiers — et est lue à voix haute en
+français, avec une vibration de confirmation.
+
+watchOS n'expose aucune API de clavier tiers : le clavier Uniclav ne peut pas
+fonctionner sur la montre. C'est la communication rapide, quand la parole ou le
+déplacement manquent, que cette app couvre.
+
+Pour modifier les phrases, éditez `UniclavWatch/PhraseLibrary.swift`.
 
 ## Enrichir le dictionnaire
 
@@ -98,5 +125,6 @@ utilisée avant distribution.
 
 Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) compile le
 projet à chaque push et pull request : il sélectionne l'Xcode le plus récent du
-runner puis compile le schéma `Uniclav` (application + extension clavier) pour
-le simulateur iOS, sans signature de code.
+runner, compile le schéma `Uniclav` (application, extension clavier et app
+montre embarquée) pour le simulateur iOS, puis le schéma `UniclavWatch` pour le
+simulateur watchOS — le tout sans signature de code.
