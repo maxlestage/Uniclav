@@ -19,6 +19,15 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private var lastSpaceTap: Date = .distantPast
     private var deleteTimer: Timer?
     private var accentPopup: AccentPopupView?
+    /// Voile transparent posé sous un popup resté ouvert : un appui à côté le
+    /// ferme, sans atteindre la touche qui se trouve dessous.
+    private var popupDismissLayer: UIView?
+    /// Le doigt a-t-il glissé depuis le début de l'appui long ? S'il n'a pas
+    /// bougé, relâcher laisse le popup ouvert au lieu de choisir à l'aveugle.
+    private var longPressMoved = false
+    private var longPressOrigin: CGPoint = .zero
+    /// Au carré, pour comparer sans racine carrée.
+    private static let longPressMoveThreshold: CGFloat = 12 * 12
 
     private var handSide = KeyboardSettings.handSide
     /// Le mode choisi dans l'application.
@@ -61,9 +70,18 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private static let rowSpacing: CGFloat = 8
     private static let keySpacing: CGFloat = 5
     private static let outerPadding: CGFloat = 4
-    /// Largeur des touches de service de la rangée basse, en fraction de la
-    /// rangée ; l'espace absorbe ce qui reste.
-    private static let serviceKeyWidth: CGFloat = 0.14
+    /// Largeur d'une touche de service de la rangée basse, en fraction de la
+    /// rangée ; l'espace absorbe ce qui reste. Elle se resserre quand les
+    /// touches de service se multiplient, pour que l'espace — la plus grande
+    /// cible du clavier, et la plus utilisée — ne descende jamais sous le
+    /// tiers de la rangée.
+    private static let maximumServiceKeyWidth: CGFloat = 0.14
+    private static let minimumSpaceShare: CGFloat = 0.33
+
+    private static func serviceKeyWidth(forServiceKeys count: Int) -> CGFloat {
+        guard count > 0 else { return maximumServiceKeyWidth }
+        return min(maximumServiceKeyWidth, (1 - minimumSpaceShare) / CGFloat(count))
+    }
 
     /// Disposition réellement affichée, repli compris.
     private var effectiveLayout: KeyboardSettings.Layout {
@@ -126,6 +144,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
     /// Relit les réglages partagés et reconstruit le clavier.
     func reloadConfiguration() {
+        dismissAccentPopup()
         handSide = KeyboardSettings.handSide
         layout = KeyboardSettings.layout
         palette = KeyboardSettings.palette
@@ -140,6 +159,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         pendingSignature = ""
         pendingText = ""
         pendingCapitalized = false
+        // On revient toujours aux lettres : rester sur le pavé accentué ou
+        // les chiffres d'une saisie précédente ferait chercher l'alphabet.
+        currentLayer = .letters
         rebuildRows()
         layoutContainer()
         restyle()
@@ -193,13 +215,18 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             rowStacks.append(rowStack)
 
             guard hasSpace else { continue }
+            let serviceCount = rowStack.arrangedSubviews
+                .compactMap { $0 as? KeyButton }
+                .filter { $0.key != .space }
+                .count
+            let width = Self.serviceKeyWidth(forServiceKeys: serviceCount)
             for case let button as KeyButton in rowStack.arrangedSubviews {
                 if button.key == .space {
                     button.setContentHuggingPriority(.init(1), for: .horizontal)
                     button.setContentCompressionResistancePriority(.init(1), for: .horizontal)
                 } else {
                     button.widthAnchor.constraint(equalTo: rowStack.widthAnchor,
-                                                  multiplier: Self.serviceKeyWidth).isActive = true
+                                                  multiplier: width).isActive = true
                 }
             }
         }
@@ -207,9 +234,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
     private func configureActions(for button: KeyButton) {
         switch button.key {
-        case .character:
+        case .character, .letterGroup:
             button.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
-            if case let .character(char) = button.key, Key.accentVariants[char] != nil {
+            if !button.key.longPressVariants.isEmpty {
                 let longPress = UILongPressGestureRecognizer(target: self, action: #selector(keyLongPressed(_:)))
                 longPress.minimumPressDuration = 0.35
                 button.addGestureRecognizer(longPress)
@@ -260,13 +287,13 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         // Pendant la frappe groupée, la barre et le champ sont pilotés par
         // `refreshPending` : le contexte ne doit pas les contredire.
         guard pendingSignature.isEmpty else { return }
-        // En saisie groupée, la barre n'affiche que les lectures de la frappe
-        // en cours ; une suggestion par préfixe n'aurait aucun sens.
-        // En appuis répétés le texte inséré est réel : la prédiction par
-        // préfixe fonctionne comme sur un clavier ordinaire.
-        showSuggestions(effectiveLayout.usesDictionary
-                        ? []
-                        : predictionEngine.suggestions(forPrefix: currentWord))
+        // Hors frappe groupée, le texte du champ est réel dans tous les modes :
+        // la prédiction par préfixe s'applique donc partout, y compris en
+        // grosses touches, où elle prend le relais dès qu'une lettre a été
+        // écrite autrement — au pavé accentué, par exemple. La réserver aux
+        // modes sans dictionnaire laissait la barre vide précisément là où
+        // elle aurait servi.
+        showSuggestions(predictionEngine.suggestions(forPrefix: currentWord))
         applyAutoShiftIfNeeded()
     }
 
@@ -332,6 +359,8 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             switchLayer(to: .letters)
         case .symbols:
             switchLayer(to: .symbols)
+        case .special:
+            switchLayer(to: .special)
         case .switchLayout:
             toggleLayout()
         case .delete, .globe:
@@ -391,6 +420,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func switchLayer(to layer: KeyboardLayer) {
+        dismissAccentPopup()
         commitPending()
         currentLayer = layer
         rebuildRows()
@@ -400,6 +430,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Aller-retour vers l'AZERTY. Le mode choisi n'est pas modifié : on
     /// revient à celui-ci en touchant ⊞ de nouveau.
     private func toggleLayout() {
+        dismissAccentPopup()
         commitPending()
         usingFallback.toggle()
         predictionEngine.prepare(grouping: effectiveLayout.grouping)
@@ -518,6 +549,10 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         guard let word = button.title(for: .normal), !word.isEmpty else { return }
         UIDevice.current.playInputClick()
         let proxy = controller.textDocumentProxy
+        // Sans cela, la lettre encore en cours de cyclage restait « vivante » :
+        // le prochain appui sur sa touche effaçait la dernière lettre du mot
+        // qu'on venait de choisir.
+        commitMultiTap()
 
         if pendingSignature.isEmpty {
             let typed = currentWord
@@ -591,32 +626,47 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     // MARK: - Accents par appui long
 
     @objc private func keyLongPressed(_ gesture: UILongPressGestureRecognizer) {
-        guard let button = gesture.view as? KeyButton,
-              case let .character(char) = button.key,
-              let variants = Key.accentVariants[char] else { return }
+        guard let button = gesture.view as? KeyButton else { return }
+        let variants = button.key.longPressVariants
+        guard !variants.isEmpty else { return }
 
         switch gesture.state {
         case .began:
+            dismissAccentPopup()
+            longPressMoved = false
+            longPressOrigin = gesture.location(in: self)
             let displayed = shiftState != .off
                 ? variants.map { $0.uppercased(with: Locale(identifier: "fr_FR")) }
                 : variants
             let popup = AccentPopupView(variants: displayed)
+            popup.onPick = { [weak self] variant in
+                self?.insertVariant(variant)
+                self?.dismissAccentPopup()
+            }
             addSubview(popup)
             let buttonFrame = button.convert(button.bounds, to: self)
             popup.place(above: buttonFrame, in: bounds)
             accentPopup = popup
         case .changed:
-            accentPopup?.updateSelection(for: gesture.location(in: self))
-        case .ended:
-            if let selected = accentPopup?.selectedVariant {
-                controller.textDocumentProxy.insertText(selected)
-                if shiftState == .on {
-                    shiftState = .off
-                    updateShiftAppearance()
-                }
-                updateFromContext()
+            let point = gesture.location(in: self)
+            let dx = point.x - longPressOrigin.x
+            let dy = point.y - longPressOrigin.y
+            if dx * dx + dy * dy > Self.longPressMoveThreshold {
+                longPressMoved = true
             }
-            dismissAccentPopup()
+            guard longPressMoved else { return }
+            accentPopup?.updateSelection(for: point)
+        case .ended:
+            // Le doigt a glissé : on écrit la variante survolée, comme sur iOS.
+            // Il n'a pas bougé : le popup reste, et la variante se touche.
+            if longPressMoved {
+                if let selected = accentPopup?.selectedVariant {
+                    insertVariant(selected)
+                }
+                dismissAccentPopup()
+            } else {
+                latchAccentPopup()
+            }
         case .cancelled, .failed:
             dismissAccentPopup()
         default:
@@ -624,8 +674,40 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         }
     }
 
+    /// Écrit une variante comme une lettre ordinaire : elle interrompt le mot
+    /// groupé en cours et le cycle d'appuis répétés, sans quoi la touche
+    /// suivante effacerait la lettre qu'on vient de choisir.
+    private func insertVariant(_ variant: String) {
+        commitPending()
+        controller.textDocumentProxy.insertText(variant)
+        if shiftState == .on {
+            shiftState = .off
+            updateShiftAppearance()
+        }
+        updateFromContext()
+    }
+
+    /// Laisse le popup ouvert, sous un voile qui absorbe l'appui à côté.
+    private func latchAccentPopup() {
+        guard let popup = accentPopup else { return }
+        let veil = UIView(frame: bounds)
+        veil.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        veil.backgroundColor = .clear
+        veil.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                         action: #selector(dismissAccentPopupFromTap)))
+        insertSubview(veil, belowSubview: popup)
+        popupDismissLayer = veil
+        popup.enableTapSelection()
+    }
+
+    @objc private func dismissAccentPopupFromTap() {
+        dismissAccentPopup()
+    }
+
     private func dismissAccentPopup() {
         accentPopup?.removeFromSuperview()
         accentPopup = nil
+        popupDismissLayer?.removeFromSuperview()
+        popupDismissLayer = nil
     }
 }

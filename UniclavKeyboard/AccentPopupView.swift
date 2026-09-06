@@ -1,15 +1,26 @@
 import UIKit
 
 /// Popup affiché au-dessus d'une touche lors d'un appui long, proposant les
-/// variantes accentuées. La sélection se fait en glissant le doigt.
+/// variantes accentuées.
+///
+/// Deux façons de choisir, parce qu'une seule exclurait quelqu'un. En glissant
+/// le doigt sans relâcher, comme sur iOS. Ou, si le doigt n'a pas bougé, en
+/// relâchant puis en touchant la variante : le popup reste alors ouvert. Tenir
+/// une touche immobile, glisser, puis relâcher au bon endroit fait trois gestes
+/// précis enchaînés — c'est beaucoup demander à la main qu'on vise ici.
 final class AccentPopupView: UIView {
 
     private let variants: [String]
     private var labels: [UILabel] = []
     private var selectedIndex = 0
 
-    private let cellWidth: CGFloat = 46
-    private let cellHeight: CGFloat = 54
+    /// Appelé quand une variante est touchée, le popup étant resté ouvert.
+    var onPick: ((String) -> Void)?
+
+    /// 50 pt de large : au-dessus du minimum tactile d'iOS, puisque la
+    /// variante peut désormais être visée d'un appui.
+    private let cellWidth: CGFloat = 50
+    private let cellHeight: CGFloat = 56
 
     var selectedVariant: String? {
         variants.indices.contains(selectedIndex) ? variants[selectedIndex] : nil
@@ -44,6 +55,9 @@ final class AccentPopupView: UIView {
             label.font = .systemFont(ofSize: 26)
             label.layer.cornerRadius = 8
             label.layer.masksToBounds = true
+            label.isAccessibilityElement = true
+            label.accessibilityLabel = variant
+            label.accessibilityTraits = .button
             stack.addArrangedSubview(label)
             labels.append(label)
         }
@@ -61,6 +75,21 @@ final class AccentPopupView: UIView {
         var y = keyFrame.minY - cellHeight - 8
         if y < 0 { y = keyFrame.maxY + 8 }
         frame = CGRect(x: x, y: y, width: width, height: cellHeight)
+    }
+
+    /// Laisse le popup ouvert : on choisit ensuite d'un appui, sans avoir à
+    /// maintenir la touche. Plus rien n'est présélectionné — relâcher ne doit
+    /// pas écrire une variante qu'on n'a pas visée.
+    func enableTapSelection() {
+        isUserInteractionEnabled = true
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(_:))))
+        highlight(index: -1)
+    }
+
+    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
+        let index = Int(floor(gesture.location(in: self).x / cellWidth))
+        guard variants.indices.contains(index) else { return }
+        onPick?(variants[index])
     }
 
     /// Met à jour la variante sélectionnée selon la position du doigt.

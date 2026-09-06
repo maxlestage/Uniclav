@@ -102,6 +102,8 @@ final class KeyButton: UIButton {
             setTitle("ABC", for: .normal)
         case .symbols:
             setTitle("#+=", for: .normal)
+        case .special:
+            setTitle("éàç", for: .normal)
         case .ret:
             setImage(symbolImage("return"), for: .normal)
         case .delete:
@@ -131,6 +133,7 @@ final class KeyButton: UIButton {
         case .numbers: accessibilityLabel = "Chiffres et ponctuation"
         case .letters: accessibilityLabel = "Lettres"
         case .symbols: accessibilityLabel = "Symboles"
+        case .special: accessibilityLabel = "Caractères accentués"
         case .globe: accessibilityLabel = "Clavier suivant"
         case .switchLayout: accessibilityLabel = "Changer de disposition"
         }

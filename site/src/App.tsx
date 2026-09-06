@@ -175,6 +175,20 @@ export function App() {
               Wiktionnaire par l’application, puis ajouté définitivement avec ses
               accents.
             </li>
+            <li>
+              Une touche <strong>« éàç »</strong>, présente dans les six modes,
+              ouvre les dix-huit caractères que le clavier ne produit pas
+              autrement : toutes les voyelles accentuées, ç, œ, l’apostrophe
+              typographique et les guillemets français.
+            </li>
+            <li>
+              <strong>L’appui long</strong> donne les variantes de n’importe
+              quelle touche, y compris les grosses : maintenir « ABC » propose
+              à â ä á æ ç. On choisit en glissant, ou en relâchant puis en
+              touchant — tenir, glisser et relâcher au bon endroit fait trois
+              gestes précis enchaînés, et ce n’est pas ce qu’on peut demander
+              ici.
+            </li>
           </ul>
         </section>
 
