@@ -50,7 +50,7 @@ export function App() {
         </section>
 
         <section className="shell section" aria-labelledby="dispositions" id="dispositions">
-          <p className="eyebrow">Cinq modes</p>
+          <p className="eyebrow">Six modes</p>
           <h2 id="dispositions-titre">Selon ce que votre main permet.</h2>
           <p className="prose">
             Aucun mode n’est meilleur qu’un autre. Les chiffres ci-dessous sont
@@ -112,6 +112,16 @@ export function App() {
               </p>
               <LayoutPreview variant="grouped-large" />
             </article>
+            <article className="card">
+              <h3>Appuis répétés</h3>
+              <p>
+                Les mêmes grosses touches, mais <strong>sans dictionnaire</strong> :
+                on appuie jusqu’à obtenir la lettre voulue. Plus lent, et le seul
+                mode totalement prévisible — aucun mot ne peut être refusé, noms
+                propres compris. Le délai de validation se règle de 0,6 à 3 s.
+              </p>
+              <LayoutPreview variant="grouped" />
+            </article>
           </div>
 
           <div className="stats">
@@ -164,6 +174,24 @@ export function App() {
               accents.
             </li>
           </ul>
+        </section>
+
+        <section className="shell section" aria-labelledby="couleurs" id="couleurs">
+          <p className="eyebrow">Couleurs</p>
+          <h2 id="couleurs-titre">Vos couleurs, mesurées.</h2>
+          <p className="prose">
+            Sept thèmes, du sable à l’encre jusqu’au jaune sur noir des aides à
+            la basse vision. Ou les vôtres : le fond des touches et la couleur
+            des lettres se règlent séparément, le reste en est dérivé.
+          </p>
+          <p className="prose">
+            Chaque thème fourni atteint le niveau <strong>AAA</strong> de WCAG,
+            et l’application affiche le rapport de contraste{" "}
+            <strong>en direct</strong> pendant que vous choisissez — en vous
+            avertissant s’il descend trop bas. Sur un clavier destiné à des
+            personnes dont la vue peut avoir été touchée par le même AVC, un
+            réglage illisible n’est pas une option esthétique.
+          </p>
         </section>
 
         <section className="shell section" aria-labelledby="confidentialite" id="confidentialite">

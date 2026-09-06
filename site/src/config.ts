@@ -53,6 +53,7 @@ export const site = {
   productLinks: [
     { label: "Les deux dispositions", href: "./#dispositions" },
     { label: "Essayer la frappe", href: "./#demonstration" },
+    { label: "Couleurs", href: "./#couleurs" },
     { label: "Confidentialité", href: "./#confidentialite" },
     { label: "Application montre", href: "./#montre" },
   ],

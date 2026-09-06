@@ -7,17 +7,19 @@ final class KeyButton: UIButton {
     private var uppercase = false
     private var largeLabels = true
     private var highContrast = false
+    private var palette = KeyboardSettings.palette
 
     init(key: Key) {
         self.key = key
         super.init(frame: .zero)
         layer.cornerRadius = 9
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowColor = UIColor.black.cgColor  // l'ombre reste neutre
         layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.shadowOpacity = 0.25
         layer.shadowRadius = 0
         translatesAutoresizingMaskIntoConstraints = false
-        applyStyle(largeLabels: true, highContrast: false, shiftActive: false)
+        applyStyle(largeLabels: true, highContrast: false, shiftActive: false,
+                   palette: KeyboardSettings.palette)
         refreshTitle()
         configureAccessibility()
     }
@@ -25,9 +27,11 @@ final class KeyButton: UIButton {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError("init(coder:) non géré") }
 
-    func applyStyle(largeLabels: Bool, highContrast: Bool, shiftActive: Bool) {
+    func applyStyle(largeLabels: Bool, highContrast: Bool, shiftActive: Bool,
+                    palette: KeyboardPalette) {
         self.largeLabels = largeLabels
         self.highContrast = highContrast
+        self.palette = palette
 
         let isSpecial: Bool
         switch key {
@@ -37,18 +41,16 @@ final class KeyButton: UIButton {
             isSpecial = true
         }
 
-        if highContrast {
-            backgroundColor = isSpecial ? UIColor.label.withAlphaComponent(0.25) : UIColor.systemBackground
-            setTitleColor(.label, for: .normal)
-        } else {
-            backgroundColor = isSpecial
-                ? UIColor.secondarySystemFill
-                : UIColor { trait in
-                    trait.userInterfaceStyle == .dark ? UIColor(white: 0.42, alpha: 1) : .white
-                }
-            setTitleColor(.label, for: .normal)
-        }
-        tintColor = .label
+        // Le contraste renforcé pousse les touches de service vers la même
+        // teinte que les lettres : elles cessent d'être un aplat discret.
+        let face = isSpecial
+            ? (highContrast
+               ? palette.keyFace.blended(toward: palette.keyText, amount: 0.34)
+               : palette.specialKeyFace)
+            : palette.keyFace
+        backgroundColor = face.uiColor
+        setTitleColor(palette.keyText.uiColor, for: .normal)
+        tintColor = palette.keyText.uiColor
 
         let letterSize: CGFloat = largeLabels ? 28 : 23
         let specialSize: CGFloat = largeLabels ? 18 : 15

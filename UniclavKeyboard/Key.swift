@@ -44,7 +44,7 @@ enum KeyboardLayer {
             case .azerty: return Self.azertyRows
             case .alphabetical: return Self.alphabeticalRows
             case .frequency: return Self.frequencyRows
-            case .grouped, .groupedLarge:
+            case .grouped, .groupedLarge, .multiTap:
                 return Self.groupedRows(for: layout.grouping ?? .eight)
             }
         case .numbers:

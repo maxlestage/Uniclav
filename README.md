@@ -5,9 +5,13 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 
 ## Fonctionnalités
 
-- **Cinq modes de clavier**, au choix de l'utilisateur : AZERTY, alphabétique,
-  fréquence, grosses touches et très grosses touches. Chacun répond à une gêne
-  différente ; aucun n'est meilleur dans l'absolu. Voir *Modes de clavier*.
+- **Six modes de clavier**, au choix de l'utilisateur : AZERTY, alphabétique,
+  fréquence, grosses touches, très grosses touches et appuis répétés. Chacun
+  répond à une gêne différente ; aucun n'est meilleur dans l'absolu. Voir
+  *Modes de clavier*.
+- **Couleurs réglables** : sept thèmes, tous mesurés au niveau AAA de WCAG, ou
+  vos propres couleurs — fond des touches et lettres réglés séparément, avec le
+  rapport de contraste affiché en direct.
 - **Clavier à une main** : les touches sont regroupées du côté de la main valide
   (gauche ou droite), avec une flèche ⇄ pour changer de côté en un geste.
 - **Grandes touches réglables** : largeur du clavier (60 à 100 % de l'écran) et
@@ -44,6 +48,7 @@ UniclavKeyboard/          Extension clavier (UIKit)
   AccentPopupView         Popup d'accents à l'appui long
 Shared/                   Code commun aux deux cibles
   KeyboardSettings        Réglages partagés via l'App Group
+  KeyboardTheme           Couleurs du clavier et calcul de contraste WCAG
   LetterGroups            Découpages des lettres sur les touches groupées
   PredictionEngine        Moteur de prédiction (dictionnaire + apprentissage)
   dictionnaire_fr.txt     Dictionnaire français classé par fréquence
@@ -134,7 +139,7 @@ Pour modifier les phrases, éditez `UniclavWatch/PhraseLibrary.swift`.
 
 ## Modes de clavier
 
-Cinq modes, choisis dans l'application. Le choix n'est pas cosmétique : chacun
+Six modes, choisis dans l'application. Le choix n'est pas cosmétique : chacun
 répond à une gêne distincte, et les chiffres ci-dessous sont mesurés sur le
 dictionnaire fourni, pas estimés.
 
@@ -183,6 +188,47 @@ cinq choix, le réglage devient lui-même un obstacle.
 
 Les collisions restantes sont presque toutes des paires accentuées
 (`donne` / `donné`) ou des voisins évidents (`mon` / `non` / `nom`).
+
+### Appuis répétés
+
+Les mêmes huit grosses touches, mais **sans dictionnaire** : on appuie
+plusieurs fois sur la même touche jusqu'à obtenir la lettre voulue, comme sur
+un téléphone d'avant. C'est plus lent, et c'est le seul mode totalement
+prévisible — aucun mot ne peut être refusé, noms propres compris. Il rend donc
+inutile le repli vers l'AZERTY qu'exigent les deux modes à dictionnaire.
+
+Une lettre est figée passé un délai réglable de 0,6 à 3 secondes, généreux par
+défaut à 1,5 s. Ce réglage compte : un délai court rend le mode inutilisable
+pour une main lente, et c'est précisément la main qu'on vise ici. Passé le
+délai, un nouvel appui sur la même touche écrit une lettre de plus au lieu de
+changer la précédente — c'est ainsi qu'on écrit deux lettres du même groupe à
+la suite.
+
+## Couleurs
+
+Sept thèmes, et la possibilité de choisir ses propres couleurs. Le fond des
+touches et la couleur des lettres se règlent **séparément** ; les autres teintes
+— touches de service, fond général — en sont dérivées par mélange, pour qu'un
+seul choix suffise.
+
+| Thème | Contraste |
+|---|---|
+| Encre sur sable | 14,9:1 |
+| Nuit | 9,6:1 |
+| Contraste maximal | 21,0:1 |
+| Jaune sur noir | 12,9:1 |
+| Noir sur jaune | 12,9:1 |
+| Bleu profond | 13,7:1 |
+| Vert d'eau | 11,6:1 |
+
+Tous atteignent le niveau **AAA** de WCAG 2.1 (rapport ≥ 7:1). Ce n'est pas une
+coquetterie : sur un clavier destiné à des personnes dont la vue peut avoir été
+touchée par le même AVC, un thème illisible n'est pas une option esthétique.
+
+Rien n'empêche en revanche de choisir soi-même deux teintes trop proches.
+L'application calcule donc le rapport de contraste **en direct** et le dit
+franchement quand il descend sous 4,5:1 — `KeyboardTheme.swift` implémente la
+formule de luminance relative de WCAG.
 
 Les accents, apostrophes et traits d'union sont ignorés dans la frappe : taper
 les lettres de « aujourdhui » produit « aujourd'hui », correctement

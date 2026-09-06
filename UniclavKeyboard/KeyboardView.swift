@@ -39,6 +39,14 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Majuscule demandée au moment de la première touche du mot.
     private var pendingCapitalized = false
 
+    /// Appuis répétés : touche en cours de cyclage, rang de la lettre
+    /// affichée, et le compte à rebours qui valide la lettre.
+    private var multiTapGroup: Int?
+    private var multiTapIndex = 0
+    private var multiTapTimer: Timer?
+
+    private var palette = KeyboardSettings.palette
+
     // MARK: - Sous-vues
 
     private let containerStack = UIStackView()
@@ -120,7 +128,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     func reloadConfiguration() {
         handSide = KeyboardSettings.handSide
         layout = KeyboardSettings.layout
+        palette = KeyboardSettings.palette
         usingFallback = false
+        commitMultiTap()
         predictionEngine.prepare(grouping: effectiveLayout.grouping)
         scale = KeyboardSettings.keyboardScale
         keyHeight = KeyboardSettings.keyHeight
@@ -219,18 +229,17 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         let contrast = KeyboardSettings.highContrast
         for rowStack in rowStacks {
             for case let button as KeyButton in rowStack.arrangedSubviews {
-                button.applyStyle(largeLabels: large, highContrast: contrast, shiftActive: shiftState != .off)
+                button.applyStyle(largeLabels: large, highContrast: contrast,
+                                  shiftActive: shiftState != .off, palette: palette)
             }
         }
         updateShiftAppearance()
-        let suggestionBackground: UIColor = contrast
-            ? UIColor.label.withAlphaComponent(0.12)
-            : UIColor.secondarySystemFill
+        backgroundColor = palette.backdrop.uiColor
         for button in suggestionButtons {
-            button.backgroundColor = suggestionBackground
-            button.setTitleColor(.label, for: .normal)
+            button.backgroundColor = palette.specialKeyFace.uiColor
+            button.setTitleColor(palette.keyText.uiColor, for: .normal)
         }
-        sideSwitchButton.tintColor = .label
+        sideSwitchButton.tintColor = palette.keyText.uiColor
     }
 
     // MARK: - Contexte et suggestions
@@ -253,9 +262,11 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         guard pendingSignature.isEmpty else { return }
         // En saisie groupée, la barre n'affiche que les lectures de la frappe
         // en cours ; une suggestion par préfixe n'aurait aucun sens.
-        showSuggestions(effectiveLayout.grouping == nil
-                        ? predictionEngine.suggestions(forPrefix: currentWord)
-                        : [])
+        // En appuis répétés le texte inséré est réel : la prédiction par
+        // préfixe fonctionne comme sur un clavier ordinaire.
+        showSuggestions(effectiveLayout.usesDictionary
+                        ? []
+                        : predictionEngine.suggestions(forPrefix: currentWord))
         applyAutoShiftIfNeeded()
     }
 
@@ -302,7 +313,11 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             commitPending()
             insertCharacter(char)
         case let .letterGroup(index, _):
-            appendGroup(index)
+            if effectiveLayout.usesDictionary {
+                appendGroup(index)
+            } else {
+                handleMultiTap(index)
+            }
         case .shift:
             handleShiftTap()
         case .space:
@@ -335,6 +350,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func handleShiftTap() {
+        commitMultiTap()
         let now = Date()
         if now.timeIntervalSince(lastShiftTap) < 0.35 {
             shiftState = .locked
@@ -410,7 +426,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func refreshPending() {
-        guard let grouping = effectiveLayout.grouping else { return }
+        guard effectiveLayout.usesDictionary, let grouping = effectiveLayout.grouping else { return }
         let matches = predictionEngine.groupedMatches(forSignature: pendingSignature)
         // Le champ montre un mot de la longueur frappée, pour qu'effacer se
         // voie. À défaut de mot connu, la première lettre de chaque touche :
@@ -441,6 +457,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Fige le mot en cours : il devient du texte ordinaire et alimente
     /// l'apprentissage.
     private func commitPending() {
+        commitMultiTap()
         guard !pendingSignature.isEmpty else { return }
         if !pendingText.isEmpty {
             predictionEngine.learn(word: pendingText)
@@ -448,6 +465,53 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         pendingSignature = ""
         pendingText = ""
         pendingCapitalized = false
+    }
+
+    // MARK: - Appuis répétés
+
+    /// Chaque appui sur la même touche remplace la lettre par la suivante du
+    /// groupe. Passé le délai, la lettre est validée et l'appui suivant
+    /// recommence un cycle — c'est ce qui permet d'écrire deux lettres de la
+    /// même touche à la suite.
+    private func handleMultiTap(_ index: Int) {
+        guard let grouping = effectiveLayout.grouping else { return }
+        let groups = grouping.groups
+        guard groups.indices.contains(index) else { return }
+        let letters = Array(groups[index])
+        guard !letters.isEmpty else { return }
+
+        let proxy = controller.textDocumentProxy
+        if multiTapGroup == index {
+            multiTapIndex = (multiTapIndex + 1) % letters.count
+            proxy.deleteBackward()
+        } else {
+            multiTapGroup = index
+            multiTapIndex = 0
+        }
+
+        let letter = String(letters[multiTapIndex])
+        proxy.insertText(shiftState != .off
+                         ? letter.uppercased(with: Locale(identifier: "fr_FR"))
+                         : letter)
+        if shiftState == .on {
+            shiftState = .off
+            updateShiftAppearance()
+        }
+
+        multiTapTimer?.invalidate()
+        multiTapTimer = Timer.scheduledTimer(withTimeInterval: KeyboardSettings.multiTapDelay,
+                                             repeats: false) { [weak self] _ in
+            self?.commitMultiTap()
+        }
+    }
+
+    /// Fige la lettre en cours : le prochain appui sur la même touche
+    /// écrira une nouvelle lettre au lieu de remplacer celle-ci.
+    private func commitMultiTap() {
+        multiTapTimer?.invalidate()
+        multiTapTimer = nil
+        multiTapGroup = nil
+        multiTapIndex = 0
     }
 
     @objc private func suggestionTapped(_ button: UIButton) {
@@ -498,6 +562,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// recalcule le mot ; le texte validé n'est atteint qu'ensuite.
     private func performDelete() {
         if pendingSignature.isEmpty {
+            commitMultiTap()
             controller.textDocumentProxy.deleteBackward()
         } else {
             pendingSignature.removeLast()
