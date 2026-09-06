@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var keyHeight = KeyboardSettings.keyHeight
     @State private var largeLabels = KeyboardSettings.largeLabels
     @State private var highContrast = KeyboardSettings.highContrast
+    @State private var appIcon = AppIconChoice.current
+    @State private var iconFailed = false
     @State private var testText = ""
 
     var body: some View {
@@ -26,6 +28,7 @@ struct ContentView: View {
                 sizeSection
                 displaySection
                 colorSection
+                iconSection
                 dictionarySection
                 testSection
                 aboutSection
@@ -236,6 +239,82 @@ struct ContentView: View {
         .frame(width: 46, height: 46)
         .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(.quaternary))
         .accessibilityHidden(true)
+    }
+
+    private var iconSection: some View {
+        Section {
+            if AppIconChoice.isSupported {
+                ForEach(AppIconChoice.all) { choice in
+                    Button {
+                        AppIconChoice.apply(choice) { succeeded in
+                            if succeeded {
+                                appIcon = choice
+                                iconFailed = false
+                            } else {
+                                // On ne prétend pas avoir changé l'icône :
+                                // l'affichage revient à celle réellement posée.
+                                appIcon = AppIconChoice.current
+                                iconFailed = true
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 12) {
+                            iconPreview(choice)
+                            Text(choice.label)
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: choice == appIcon ? "checkmark.circle.fill" : "circle")
+                                .font(.title3)
+                                .foregroundStyle(choice == appIcon ? Color.accentColor : Color.secondary)
+                                .accessibilityHidden(true)
+                        }
+                        .padding(.vertical, 4)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(choice == appIcon ? [.isButton, .isSelected] : .isButton)
+                }
+
+                if iconFailed {
+                    Label("L'icône n'a pas pu être changée.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.footnote)
+                        .foregroundStyle(Color.orange)
+                }
+            } else {
+                Text("Cet appareil ne permet pas de changer l'icône de l'application.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Icône")
+        } footer: {
+            Text("L'icône reprend les couleurs d'un thème, et se choisit indépendamment de celui du clavier. iOS affiche sa propre alerte de confirmation à chaque changement : elle vient du système, pas de l'application.")
+        }
+    }
+
+    /// L'image livrée, quand elle se charge ; à défaut, un aperçu dessiné aux
+    /// couleurs du thème plutôt qu'une case vide.
+    @ViewBuilder
+    private func iconPreview(_ choice: AppIconChoice) -> some View {
+        let side: CGFloat = 44
+        if let image = choice.image {
+            Image(uiImage: image)
+                .resizable()
+                .frame(width: side, height: side)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .accessibilityHidden(true)
+        } else {
+            let colors = palette(for: choice.theme)
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(colors.keyFace.color)
+                .frame(width: side, height: side)
+                .overlay(
+                    Text("A")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(colors.keyText.color)
+                )
+                .accessibilityHidden(true)
+        }
     }
 
     private var colorSection: some View {

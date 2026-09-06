@@ -26,9 +26,20 @@ jobs:
       - run: bun run typecheck
       - run: bun run build
 
+  # Le projet Xcode est écrit à la main, sans générateur. Une référence
+  # pendante ou un fichier manquant ne se verrait sinon qu'au bout des trois
+  # minutes du runner macOS ; ici, en deux secondes sur Linux.
+  project:
+    name: Projet Xcode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: python3 tools/check_pbxproj.py
+
   build:
     name: Compilation iOS et watchOS
     runs-on: macos-15
+    needs: project
     steps:
       - uses: actions/checkout@v5
 
