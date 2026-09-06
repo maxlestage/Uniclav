@@ -23,6 +23,9 @@ enum KeyboardSettings {
         case grouped
         /// Six touches de quatre ou cinq lettres : les plus larges possible.
         case groupedLarge
+        /// Huit touches, mais sans dictionnaire : on appuie plusieurs fois
+        /// sur la même touche jusqu'à obtenir la lettre voulue.
+        case multiTap
 
         var id: String { rawValue }
 
@@ -33,6 +36,7 @@ enum KeyboardSettings {
             case .frequency: return "Fréquence"
             case .grouped: return "Grosses touches"
             case .groupedLarge: return "Très grosses touches"
+            case .multiTap: return "Appuis répétés"
             }
         }
 
@@ -49,6 +53,8 @@ enum KeyboardSettings {
                 return "Huit touches trois fois plus larges. Le dictionnaire retrouve le mot : 94,7 % du premier coup, et le mot voulu toujours visible dans les suggestions."
             case .groupedLarge:
                 return "Six touches, les plus larges possible, pour une main qui tremble. 88,5 % du premier coup, et le mot reste visible dans 99 % des cas."
+            case .multiTap:
+                return "Les mêmes huit grosses touches, mais sans dictionnaire : on appuie jusqu'à obtenir la lettre voulue. Plus lent, et totalement prévisible — aucun mot ne peut être refusé, noms propres compris."
             }
         }
 
@@ -56,9 +62,19 @@ enum KeyboardSettings {
         /// par touche ; nil lorsqu'une touche ne porte qu'une lettre.
         var grouping: LetterGroups.Grouping? {
             switch self {
-            case .grouped: return .eight
+            case .grouped, .multiTap: return .eight
             case .groupedLarge: return .six
             case .azerty, .alphabetical, .frequency: return nil
+            }
+        }
+
+        /// Le dictionnaire tranche-t-il entre les lettres d'une touche ?
+        /// Faux pour les appuis répétés, où c'est l'utilisateur qui tranche —
+        /// ce qui rend ce mode insensible aux mots inconnus.
+        var usesDictionary: Bool {
+            switch self {
+            case .grouped, .groupedLarge: return true
+            case .azerty, .alphabetical, .frequency, .multiTap: return false
             }
         }
     }
@@ -94,12 +110,53 @@ enum KeyboardSettings {
         static let dictionaryWordCount = "dictionaryWordCount"
         static let coreVocabularyMerged = "coreVocabularyMerged"
         static let shareUnknownWords = "shareUnknownWords"
+        static let theme = "theme"
+        static let customKeyFace = "customKeyFace"
+        static let customKeyText = "customKeyText"
+        static let multiTapDelay = "multiTapDelay"
     }
 
     /// Disposition des lettres.
     static var layout: Layout {
         get { Layout(rawValue: defaults.string(forKey: Key.layout) ?? "") ?? .azerty }
         set { defaults.set(newValue.rawValue, forKey: Key.layout) }
+    }
+
+    /// Thème de couleurs du clavier.
+    static var theme: KeyboardTheme {
+        get { KeyboardTheme(rawValue: defaults.string(forKey: Key.theme) ?? "") ?? .inkOnSand }
+        set { defaults.set(newValue.rawValue, forKey: Key.theme) }
+    }
+
+    /// Couleur du fond des touches, quand « Mes couleurs » est choisi.
+    static var customKeyFace: KeyboardColor {
+        get { KeyboardColor(hex: defaults.string(forKey: Key.customKeyFace) ?? "") ?? KeyboardColor(hex: "FBF8F2")! }
+        set { defaults.set(newValue.hex, forKey: Key.customKeyFace) }
+    }
+
+    /// Couleur des lettres, quand « Mes couleurs » est choisi.
+    static var customKeyText: KeyboardColor {
+        get { KeyboardColor(hex: defaults.string(forKey: Key.customKeyText) ?? "") ?? KeyboardColor(hex: "26221D")! }
+        set { defaults.set(newValue.hex, forKey: Key.customKeyText) }
+    }
+
+    /// Couleurs réellement appliquées, thème choisi ou couleurs personnelles.
+    static var palette: KeyboardPalette {
+        if let preset = theme.preset {
+            return KeyboardPalette(keyFace: preset.face, keyText: preset.text)
+        }
+        return KeyboardPalette(keyFace: customKeyFace, keyText: customKeyText)
+    }
+
+    /// Délai avant qu'une lettre saisie par appuis répétés soit validée, en
+    /// secondes (0,6 … 3,0). Généreux par défaut : un délai court rend ce
+    /// mode inutilisable pour une main lente.
+    static var multiTapDelay: TimeInterval {
+        get {
+            let value = defaults.double(forKey: Key.multiTapDelay)
+            return value == 0 ? 1.5 : min(max(value, 0.6), 3.0)
+        }
+        set { defaults.set(min(max(newValue, 0.6), 3.0), forKey: Key.multiTapDelay) }
     }
 
     /// Côté d'ancrage du clavier (main valide de l'utilisateur).

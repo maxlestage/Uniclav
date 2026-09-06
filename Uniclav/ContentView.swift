@@ -5,6 +5,10 @@ struct ContentView: View {
     @EnvironmentObject private var updater: DictionaryUpdater
     @State private var autoUpdate = KeyboardSettings.autoUpdateDictionary
     @State private var shareUnknown = KeyboardSettings.shareUnknownWords
+    @State private var theme = KeyboardSettings.theme
+    @State private var customFace = KeyboardSettings.customKeyFace.color
+    @State private var customText = KeyboardSettings.customKeyText.color
+    @State private var multiTapDelay = KeyboardSettings.multiTapDelay
     @State private var handSide = KeyboardSettings.handSide
     @State private var layout = KeyboardSettings.layout
     @State private var keyboardScale = KeyboardSettings.keyboardScale
@@ -21,6 +25,7 @@ struct ContentView: View {
                 handSection
                 sizeSection
                 displaySection
+                colorSection
                 dictionarySection
                 testSection
                 aboutSection
@@ -78,6 +83,17 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(mode == layout ? [.isButton, .isSelected] : .isButton)
+            }
+            if layout == .multiTap {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Délai de validation : \(multiTapDelay, specifier: "%.1f") s")
+                    Slider(value: $multiTapDelay, in: 0.6...3.0, step: 0.1)
+                        .onChange(of: multiTapDelay) { KeyboardSettings.multiTapDelay = $0 }
+                    Text("Temps d'attente avant qu'une lettre soit figée. Passé ce délai, un nouvel appui sur la même touche écrit une lettre de plus au lieu de changer la précédente — c'est ainsi qu'on écrit deux lettres de la même touche à la suite.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
             }
         } header: {
             Text("Mode de clavier")
@@ -188,6 +204,112 @@ struct ContentView: View {
         formatter.locale = Locale(identifier: "fr_FR")
         formatter.unitsStyle = .full
         return formatter.localizedString(for: date, relativeTo: Date())
+    }
+
+    // MARK: - Couleurs
+
+    private func keyboardColor(from color: Color) -> KeyboardColor {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        UIColor(color).getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return KeyboardColor(red: Double(red), green: Double(green), blue: Double(blue))
+    }
+
+    private var customPalette: KeyboardPalette {
+        KeyboardPalette(keyFace: keyboardColor(from: customFace),
+                        keyText: keyboardColor(from: customText))
+    }
+
+    private func palette(for theme: KeyboardTheme) -> KeyboardPalette {
+        guard let preset = theme.preset else { return customPalette }
+        return KeyboardPalette(keyFace: preset.face, keyText: preset.text)
+    }
+
+    /// Aperçu d'une touche dans le thème, plus parlant qu'une pastille de
+    /// couleur : c'est le contraste entre le fond et la lettre qui compte.
+    private func swatch(_ palette: KeyboardPalette) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8).fill(palette.keyFace.color)
+            Text("A")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(palette.keyText.color)
+        }
+        .frame(width: 46, height: 46)
+        .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(.quaternary))
+        .accessibilityHidden(true)
+    }
+
+    private var colorSection: some View {
+        Section {
+            ForEach(KeyboardTheme.allCases) { option in
+                Button {
+                    theme = option
+                    KeyboardSettings.theme = option
+                } label: {
+                    HStack(spacing: 12) {
+                        swatch(palette(for: option))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(option.label)
+                                .font(.headline)
+                            Text(contrastLabel(palette(for: option).contrastRatio))
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: option == theme ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                            .foregroundStyle(option == theme ? Color.accentColor : Color.secondary)
+                            .accessibilityHidden(true)
+                    }
+                    .padding(.vertical, 4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(option == theme ? [.isButton, .isSelected] : .isButton)
+            }
+
+            if theme == .custom {
+                ColorPicker("Fond des touches", selection: $customFace, supportsOpacity: false)
+                    .onChange(of: customFace) { KeyboardSettings.customKeyFace = keyboardColor(from: $0) }
+                ColorPicker("Lettres", selection: $customText, supportsOpacity: false)
+                    .onChange(of: customText) { KeyboardSettings.customKeyText = keyboardColor(from: $0) }
+
+                // Rien n'empêche de choisir deux teintes proches : le clavier
+                // deviendrait illisible sans prévenir. On mesure, et on le dit.
+                let ratio = customPalette.contrastRatio
+                Label {
+                    Text(contrastAdvice(ratio))
+                } icon: {
+                    Image(systemName: ratio >= 4.5 ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                }
+                .font(.footnote)
+                .foregroundStyle(ratio >= 4.5 ? Color.secondary : Color.orange)
+            }
+        } header: {
+            Text("Couleurs")
+        } footer: {
+            Text("Le fond des touches et la couleur des lettres se règlent séparément. Les autres teintes du clavier — touches de service, fond général — en sont dérivées, pour qu'un seul choix suffise.")
+        }
+    }
+
+    private func contrastLabel(_ ratio: Double) -> String {
+        String(format: "Contraste %.1f:1 — %@", ratio, contrastGrade(ratio))
+    }
+
+    private func contrastGrade(_ ratio: Double) -> String {
+        if ratio >= 7 { return "excellent" }
+        if ratio >= 4.5 { return "correct" }
+        if ratio >= 3 { return "faible" }
+        return "illisible"
+    }
+
+    private func contrastAdvice(_ ratio: Double) -> String {
+        if ratio >= 7 {
+            return String(format: "Contraste %.1f:1 — excellent, y compris pour une vue fatiguée.", ratio)
+        }
+        if ratio >= 4.5 {
+            return String(format: "Contraste %.1f:1 — lisible, mais 7:1 serait plus confortable.", ratio)
+        }
+        return String(format: "Contraste %.1f:1 — trop faible. Les lettres seront difficiles à distinguer du fond ; éloignez les deux couleurs.", ratio)
     }
 
     private var testSection: some View {
