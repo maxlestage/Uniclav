@@ -84,10 +84,10 @@ export function Footer() {
             </div>
           </dl>
           <p>
-            {site.name} et son logiciel sont des œuvres protégées. Le code source
-            n'est pas public et aucune licence d'utilisation, de reproduction ou
-            de modification n'est concédée au-delà de l'usage prévu par les
-            conditions générales.
+            {site.name} et son logiciel sont des œuvres protégées. Aucune licence
+            d'utilisation, de reproduction ou de modification n'est concédée
+            au-delà de l'usage prévu par les conditions générales : la
+            consultation éventuelle du code source ne vaut pas licence.
           </p>
         </div>
 
@@ -96,7 +96,7 @@ export function Footer() {
             © {copyrightRange} {site.copyrightHolder}. Tous droits réservés.
           </p>
           <p>
-            <a href="/accessibilite.html">Accessibilité : déclaration de conformité</a>
+            <a href="./accessibilite.html">Accessibilité : déclaration de conformité</a>
           </p>
         </div>
       </div>

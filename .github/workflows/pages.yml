@@ -1,0 +1,56 @@
+name: Pages
+
+# Publie le site à chaque poussée sur master. Le dépôt étant public, GitHub
+# Pages est disponible sans abonnement ; sur un dépôt privé, il faudrait un
+# plan payant.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une publication à la fois, et on ne coupe pas celle qui est en cours :
+# interrompre un déploiement laisserait le site dans un état indéterminé.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publier le site
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Installer les dépendances
+        run: bun install --frozen-lockfile
+        working-directory: site
+
+      - name: Construire le site
+        run: bun run build
+        working-directory: site
+
+      # enablement active Pages si ce n'est pas déjà fait, ce qui évite un
+      # aller-retour dans les réglages du dépôt.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+      - id: deploiement
+        uses: actions/deploy-pages@v4

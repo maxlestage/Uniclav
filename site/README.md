@@ -48,6 +48,31 @@ restant proposés dans la barre. Sans cela, effacer une touche laisserait
 souvent le même mot à l'écran et paraîtrait sans effet. L'application suit la
 même règle depuis `PredictionEngine.groupedMatches`.
 
+## Publication sur GitHub Pages
+
+Le workflow [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
+construit et publie le site à chaque poussée sur `master` touchant `site/`.
+
+Deux points qui font échouer la plupart des sites de projet sur Pages, et qui
+sont traités ici :
+
+- **Le sous-répertoire.** Un site de projet est servi sous `/Uniclav/`, pas à la
+  racine du domaine. Tous les liens internes sont donc relatifs ; un seul
+  `href="/quelque-chose"` suffirait à tout casser. Bun produit déjà des chemins
+  relatifs pour les ressources. Le rendu sous sous-répertoire est vérifié dans
+  un navigateur avant chaque livraison.
+- **Le nettoyage.** `bun run build` supprime `dist/` avant de reconstruire :
+  sans cela, les fichiers hachés des builds précédents s'accumulent et
+  finissent publiés.
+
+Un `.nojekyll` est déposé pour que Pages serve les fichiers tels quels, et une
+`404.html` en HTML statique évite d'embarquer React pour annoncer une page
+absente.
+
+L'étape `configure-pages` active Pages automatiquement si ce n'est pas déjà
+fait. À défaut, il reste à choisir **Réglages › Pages › Source : GitHub
+Actions** dans le dépôt.
+
 ## Licence
 
 Le clavier Uniclav n'est pas un logiciel libre. Ce site et son contenu sont

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --hot ./index.html",
-    "build": "bun build ./index.html ./mentions-legales.html ./confidentialite.html ./cgu.html ./accessibilite.html --outdir=dist --minify --sourcemap=none",
+    "build": "rm -rf dist && bun build ./index.html ./mentions-legales.html ./confidentialite.html ./cgu.html ./accessibilite.html --outdir=dist --minify --sourcemap=none && cp 404.html dist/ && touch dist/.nojekyll",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

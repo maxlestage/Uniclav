@@ -18,7 +18,7 @@ export function LegalLayout({
         Aller au contenu
       </a>
       <header className="shell legal-header">
-        <a className="legal-header__home" href="/">
+        <a className="legal-header__home" href="./">
           <Mark className="legal-header__mark" />
           <span>{site.name}</span>
         </a>
