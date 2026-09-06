@@ -216,10 +216,18 @@ Une énumération complète du français est hors de portée d'un téléphone :
 plusieurs millions d'entrées, cinq cents par requête, sans marquage de langue
 exploitable. C'est pourquoi l'enrichissement est ciblé plutôt qu'exhaustif.
 
+## Site vitrine
+
+`site/` contient le site de présentation, en React + TypeScript construit par
+Bun, pensé pour le téléphone d'abord. Voir [`site/README.md`](site/README.md) —
+notamment les mentions légales qui restent à renseigner avant toute mise en
+ligne.
+
 ## Intégration continue
 
 Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) compile le
 projet à chaque push et pull request : il sélectionne l'Xcode le plus récent du
 runner, compile le schéma `Uniclav` (application, extension clavier et app
 montre embarquée) pour le simulateur iOS, puis le schéma `UniclavWatch` pour le
-simulateur watchOS — le tout sans signature de code.
+simulateur watchOS — le tout sans signature de code. Un second job, sur runner
+Linux, vérifie les types et la compilation du site.
