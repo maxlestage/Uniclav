@@ -20,6 +20,10 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
   français classé par fréquence (`Shared/dictionnaire_fr.txt`), incluant du
   vocabulaire du quotidien et de la santé/rééducation. Les mots tapés par
   l'utilisateur sont appris et remontent dans les suggestions.
+- **Touche « éàç » dans les six modes** : un pavé de dix-huit caractères que le
+  clavier ne produit pas autrement — toutes les voyelles accentuées, ç, œ,
+  l'apostrophe typographique et les guillemets français. Voir *Caractères
+  spéciaux*.
 - **Accents par appui long** : maintenir `e` propose é è ê ë, etc. Glisser le
   doigt pour choisir. La recherche de suggestions ignore les accents
   (« ecol » → « école »).
@@ -203,6 +207,41 @@ pour une main lente, et c'est précisément la main qu'on vise ici. Passé le
 délai, un nouvel appui sur la même touche écrit une lettre de plus au lieu de
 changer la précédente — c'est ainsi qu'on écrit deux lettres du même groupe à
 la suite.
+
+## Caractères spéciaux
+
+Une touche **« éàç »** ouvre un pavé de dix-huit caractères, sur six colonnes.
+Elle est présente dans les six modes, ainsi que sur les pavés chiffres et
+symboles, et le pavé porte sa propre touche ⇧ : « École » et « À bientôt » sont
+des débuts de phrase, donc le cas courant.
+
+```
+é  è  ê  ë  à  â
+î  ï  ô  ö  ù  û
+ü  ç  œ  ’  «  »
+```
+
+Ces caractères n'étaient jusqu'ici accessibles que par **appui long sur une
+lettre**, ce qui suppose une lettre par touche. Les trois modes à grosses
+touches n'en avaient donc aucun :
+
+- en **grosses touches** et **très grosses touches**, le dictionnaire rétablit
+  les accents — taper les lettres de « ecole » donne « école » — mais seulement
+  pour un mot qu'il connaît ;
+- en **appuis répétés**, qui n'a pas de dictionnaire, « café » était tout
+  simplement impossible à écrire.
+
+Six colonnes et non dix : les touches restent larges dans tous les modes. Une
+lettre accentuée se tape rarement du premier coup, d'où l'effacement gardé sur
+la même rangée.
+
+## Suggestions dans tous les modes
+
+La barre de trois suggestions fonctionne désormais dans les six modes, sans
+exception. Elle était auparavant vide dans les deux modes à dictionnaire dès
+que la frappe groupée ne pilotait pas le champ — c'est-à-dire précisément après
+une lettre écrite au pavé accentué, là où la prédiction avait le plus à
+apporter.
 
 ## Couleurs
 

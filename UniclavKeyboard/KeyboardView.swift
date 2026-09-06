@@ -61,9 +61,18 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private static let rowSpacing: CGFloat = 8
     private static let keySpacing: CGFloat = 5
     private static let outerPadding: CGFloat = 4
-    /// Largeur des touches de service de la rangée basse, en fraction de la
-    /// rangée ; l'espace absorbe ce qui reste.
-    private static let serviceKeyWidth: CGFloat = 0.14
+    /// Largeur d'une touche de service de la rangée basse, en fraction de la
+    /// rangée ; l'espace absorbe ce qui reste. Elle se resserre quand les
+    /// touches de service se multiplient, pour que l'espace — la plus grande
+    /// cible du clavier, et la plus utilisée — ne descende jamais sous le
+    /// tiers de la rangée.
+    private static let maximumServiceKeyWidth: CGFloat = 0.14
+    private static let minimumSpaceShare: CGFloat = 0.33
+
+    private static func serviceKeyWidth(forServiceKeys count: Int) -> CGFloat {
+        guard count > 0 else { return maximumServiceKeyWidth }
+        return min(maximumServiceKeyWidth, (1 - minimumSpaceShare) / CGFloat(count))
+    }
 
     /// Disposition réellement affichée, repli compris.
     private var effectiveLayout: KeyboardSettings.Layout {
@@ -140,6 +149,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         pendingSignature = ""
         pendingText = ""
         pendingCapitalized = false
+        // On revient toujours aux lettres : rester sur le pavé accentué ou
+        // les chiffres d'une saisie précédente ferait chercher l'alphabet.
+        currentLayer = .letters
         rebuildRows()
         layoutContainer()
         restyle()
@@ -193,13 +205,18 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             rowStacks.append(rowStack)
 
             guard hasSpace else { continue }
+            let serviceCount = rowStack.arrangedSubviews
+                .compactMap { $0 as? KeyButton }
+                .filter { $0.key != .space }
+                .count
+            let width = Self.serviceKeyWidth(forServiceKeys: serviceCount)
             for case let button as KeyButton in rowStack.arrangedSubviews {
                 if button.key == .space {
                     button.setContentHuggingPriority(.init(1), for: .horizontal)
                     button.setContentCompressionResistancePriority(.init(1), for: .horizontal)
                 } else {
                     button.widthAnchor.constraint(equalTo: rowStack.widthAnchor,
-                                                  multiplier: Self.serviceKeyWidth).isActive = true
+                                                  multiplier: width).isActive = true
                 }
             }
         }
@@ -260,13 +277,13 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         // Pendant la frappe groupée, la barre et le champ sont pilotés par
         // `refreshPending` : le contexte ne doit pas les contredire.
         guard pendingSignature.isEmpty else { return }
-        // En saisie groupée, la barre n'affiche que les lectures de la frappe
-        // en cours ; une suggestion par préfixe n'aurait aucun sens.
-        // En appuis répétés le texte inséré est réel : la prédiction par
-        // préfixe fonctionne comme sur un clavier ordinaire.
-        showSuggestions(effectiveLayout.usesDictionary
-                        ? []
-                        : predictionEngine.suggestions(forPrefix: currentWord))
+        // Hors frappe groupée, le texte du champ est réel dans tous les modes :
+        // la prédiction par préfixe s'applique donc partout, y compris en
+        // grosses touches, où elle prend le relais dès qu'une lettre a été
+        // écrite autrement — au pavé accentué, par exemple. La réserver aux
+        // modes sans dictionnaire laissait la barre vide précisément là où
+        // elle aurait servi.
+        showSuggestions(predictionEngine.suggestions(forPrefix: currentWord))
         applyAutoShiftIfNeeded()
     }
 
@@ -332,6 +349,8 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             switchLayer(to: .letters)
         case .symbols:
             switchLayer(to: .symbols)
+        case .special:
+            switchLayer(to: .special)
         case .switchLayout:
             toggleLayout()
         case .delete, .globe:
@@ -518,6 +537,10 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         guard let word = button.title(for: .normal), !word.isEmpty else { return }
         UIDevice.current.playInputClick()
         let proxy = controller.textDocumentProxy
+        // Sans cela, la lettre encore en cours de cyclage restait « vivante » :
+        // le prochain appui sur sa touche effaçait la dernière lettre du mot
+        // qu'on venait de choisir.
+        commitMultiTap()
 
         if pendingSignature.isEmpty {
             let typed = currentWord

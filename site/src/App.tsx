@@ -175,6 +175,12 @@ export function App() {
               Wiktionnaire par l’application, puis ajouté définitivement avec ses
               accents.
             </li>
+            <li>
+              Une touche <strong>« éàç »</strong>, présente dans les six modes,
+              ouvre les dix-huit caractères que le clavier ne produit pas
+              autrement : toutes les voyelles accentuées, ç, œ, l’apostrophe
+              typographique et les guillemets français.
+            </li>
           </ul>
         </section>
 
