@@ -127,6 +127,36 @@ Pour la remplacer, déposez votre propre PNG **opaque et sans canal alpha** de
 comportant de la transparence. N'arrondissez pas les angles, iOS applique
 lui-même son masque.
 
+### Icônes de rechange
+
+L'application propose **sept icônes**, une par thème de couleurs, choisies dans
+la section *Icône*. « Encre sur sable » est l'icône principale ; les six autres
+sont des fichiers PNG posés à la racine du paquet et déclarés sous
+`CFBundleIcons` → `CFBundleAlternateIcons` dans `Uniclav/Info.plist`.
+
+Elles sont engendrées par `tools/make_icons.py`, sans aucune dépendance : le
+PNG est écrit à la main (zlib + struct) et le dessin décrit par des fonctions
+de distance signée. Le rendu se fait à 720 px puis est réduit par moyenne de
+blocs — 720 étant divisible par 4 et par 6, on obtient exactement les 180 px
+(@3x) et 120 px (@2x) qu'iOS demande pour une icône de 60 pt, le lissage venant
+de la réduction elle-même.
+
+```
+python3 tools/make_icons.py
+```
+
+Le motif ne change pas d'une icône à l'autre : seules les couleurs sont
+reprises des thèmes. Le fond des touches devient le fond de l'icône, la couleur
+des lettres devient la touche, et la lettre reprend le fond.
+
+Deux points à connaître :
+
+- **iOS affiche sa propre alerte de confirmation** à chaque changement
+  d'icône. Aucune API publique ne permet de s'en passer ; l'interface prévient
+  donc à l'avance plutôt que de laisser la surprise au système.
+- **Le choix de l'icône est indépendant de celui du clavier.** Les lier
+  aurait déclenché cette alerte à chaque changement de thème.
+
 L'extension clavier n'a pas d'icône propre : iOS affiche celle de
 l'application dans les réglages de clavier.
 
@@ -407,6 +437,22 @@ sur `master`.
 Voir [`site/README.md`](site/README.md) — notamment les mentions légales qui
 restent à renseigner, et les précautions liées au sous-répertoire d'un site de
 projet.
+
+## Outils
+
+`tools/check_pbxproj.py` vérifie le projet Xcode, qui est écrit à la main sans
+générateur. Il analyse le format plist OpenStep, puis contrôle la syntaxe,
+l'absence de référence pendante et d'objet orphelin, la présence sur le disque
+de chaque fichier référencé, et les phases de chaque cible.
+
+```
+python3 tools/check_pbxproj.py
+```
+
+La CI l'exécute sur Linux **avant** de mobiliser le runner macOS : un projet
+cassé se voit en deux secondes au lieu de trois minutes.
+
+`tools/make_icons.py` engendre les icônes de rechange (voir *Icône*).
 
 ## Intégration continue
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3000000000000000082 /* AppIconChoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000081 /* AppIconChoice.swift */; };
 		A1B2C3000000000000000021 /* UniclavApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000001 /* UniclavApp.swift */; };
 		A1B2C3000000000000000022 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000002 /* ContentView.swift */; };
 		A1B2C3000000000000000023 /* WiktionaryClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000003 /* WiktionaryClient.swift */; };
@@ -19,6 +20,18 @@
 		A1B2C300000000000000002A /* PendingWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001B /* PendingWords.swift */; };
 		A1B2C300000000000000002B /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001C /* PredictionEngine.swift */; };
 		A1B2C300000000000000002C /* dictionnaire_fr.txt in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000001D /* dictionnaire_fr.txt */; };
+		A1B2C3000000000000000074 /* AppIcon-Nuit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000068 /* AppIcon-Nuit@2x.png */; };
+		A1B2C3000000000000000075 /* AppIcon-Nuit@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000069 /* AppIcon-Nuit@3x.png */; };
+		A1B2C3000000000000000076 /* AppIcon-ContrasteMaximal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006A /* AppIcon-ContrasteMaximal@2x.png */; };
+		A1B2C3000000000000000077 /* AppIcon-ContrasteMaximal@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006B /* AppIcon-ContrasteMaximal@3x.png */; };
+		A1B2C3000000000000000078 /* AppIcon-JauneSurNoir@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006C /* AppIcon-JauneSurNoir@2x.png */; };
+		A1B2C3000000000000000079 /* AppIcon-JauneSurNoir@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006D /* AppIcon-JauneSurNoir@3x.png */; };
+		A1B2C300000000000000007A /* AppIcon-NoirSurJaune@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006E /* AppIcon-NoirSurJaune@2x.png */; };
+		A1B2C300000000000000007B /* AppIcon-NoirSurJaune@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C300000000000000006F /* AppIcon-NoirSurJaune@3x.png */; };
+		A1B2C300000000000000007C /* AppIcon-BleuProfond@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000070 /* AppIcon-BleuProfond@2x.png */; };
+		A1B2C300000000000000007D /* AppIcon-BleuProfond@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000071 /* AppIcon-BleuProfond@3x.png */; };
+		A1B2C300000000000000007E /* AppIcon-VertDEau@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000072 /* AppIcon-VertDEau@2x.png */; };
+		A1B2C300000000000000007F /* AppIcon-VertDEau@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000073 /* AppIcon-VertDEau@3x.png */; };
 		A1B2C300000000000000002D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000007 /* Assets.xcassets */; };
 		A1B2C300000000000000002E /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000008 /* KeyboardViewController.swift */; };
 		A1B2C300000000000000002F /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3000000000000000009 /* KeyboardView.swift */; };
@@ -95,12 +108,25 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A1B2C3000000000000000081 /* AppIconChoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconChoice.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000001 /* UniclavApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniclavApp.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000003 /* WiktionaryClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiktionaryClient.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000004 /* DictionaryUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryUpdate.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3000000000000000006 /* Uniclav.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Uniclav.entitlements; sourceTree = "<group>"; };
+		A1B2C3000000000000000068 /* AppIcon-Nuit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Nuit@2x.png"; sourceTree = "<group>"; };
+		A1B2C3000000000000000069 /* AppIcon-Nuit@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Nuit@3x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006A /* AppIcon-ContrasteMaximal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-ContrasteMaximal@2x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006B /* AppIcon-ContrasteMaximal@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-ContrasteMaximal@3x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006C /* AppIcon-JauneSurNoir@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-JauneSurNoir@2x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006D /* AppIcon-JauneSurNoir@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-JauneSurNoir@3x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006E /* AppIcon-NoirSurJaune@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-NoirSurJaune@2x.png"; sourceTree = "<group>"; };
+		A1B2C300000000000000006F /* AppIcon-NoirSurJaune@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-NoirSurJaune@3x.png"; sourceTree = "<group>"; };
+		A1B2C3000000000000000070 /* AppIcon-BleuProfond@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-BleuProfond@2x.png"; sourceTree = "<group>"; };
+		A1B2C3000000000000000071 /* AppIcon-BleuProfond@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-BleuProfond@3x.png"; sourceTree = "<group>"; };
+		A1B2C3000000000000000072 /* AppIcon-VertDEau@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-VertDEau@2x.png"; sourceTree = "<group>"; };
+		A1B2C3000000000000000073 /* AppIcon-VertDEau@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-VertDEau@3x.png"; sourceTree = "<group>"; };
 		A1B2C3000000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B2C3000000000000000008 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		A1B2C3000000000000000009 /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
@@ -154,6 +180,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A1B2C3000000000000000080 /* AlternateIcons */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3000000000000000068 /* AppIcon-Nuit@2x.png */,
+				A1B2C3000000000000000069 /* AppIcon-Nuit@3x.png */,
+				A1B2C300000000000000006A /* AppIcon-ContrasteMaximal@2x.png */,
+				A1B2C300000000000000006B /* AppIcon-ContrasteMaximal@3x.png */,
+				A1B2C300000000000000006C /* AppIcon-JauneSurNoir@2x.png */,
+				A1B2C300000000000000006D /* AppIcon-JauneSurNoir@3x.png */,
+				A1B2C300000000000000006E /* AppIcon-NoirSurJaune@2x.png */,
+				A1B2C300000000000000006F /* AppIcon-NoirSurJaune@3x.png */,
+				A1B2C3000000000000000070 /* AppIcon-BleuProfond@2x.png */,
+				A1B2C3000000000000000071 /* AppIcon-BleuProfond@3x.png */,
+				A1B2C3000000000000000072 /* AppIcon-VertDEau@2x.png */,
+				A1B2C3000000000000000073 /* AppIcon-VertDEau@3x.png */,
+			);
+			path = AlternateIcons;
+			sourceTree = "<group>";
+		};
 		A1B2C3000000000000000044 /* Uniclav */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,7 +206,9 @@
 				A1B2C3000000000000000002 /* ContentView.swift */,
 				A1B2C3000000000000000003 /* WiktionaryClient.swift */,
 				A1B2C3000000000000000004 /* DictionaryUpdate.swift */,
+				A1B2C3000000000000000081 /* AppIconChoice.swift */,
 				A1B2C3000000000000000007 /* Assets.xcassets */,
+				A1B2C3000000000000000080 /* AlternateIcons */,
 				A1B2C3000000000000000005 /* Info.plist */,
 				A1B2C3000000000000000006 /* Uniclav.entitlements */,
 			);
@@ -339,6 +386,18 @@
 			files = (
 				A1B2C300000000000000002C /* dictionnaire_fr.txt in Resources */,
 				A1B2C300000000000000002D /* Assets.xcassets in Resources */,
+				A1B2C3000000000000000074 /* AppIcon-Nuit@2x.png in Resources */,
+				A1B2C3000000000000000075 /* AppIcon-Nuit@3x.png in Resources */,
+				A1B2C3000000000000000076 /* AppIcon-ContrasteMaximal@2x.png in Resources */,
+				A1B2C3000000000000000077 /* AppIcon-ContrasteMaximal@3x.png in Resources */,
+				A1B2C3000000000000000078 /* AppIcon-JauneSurNoir@2x.png in Resources */,
+				A1B2C3000000000000000079 /* AppIcon-JauneSurNoir@3x.png in Resources */,
+				A1B2C300000000000000007A /* AppIcon-NoirSurJaune@2x.png in Resources */,
+				A1B2C300000000000000007B /* AppIcon-NoirSurJaune@3x.png in Resources */,
+				A1B2C300000000000000007C /* AppIcon-BleuProfond@2x.png in Resources */,
+				A1B2C300000000000000007D /* AppIcon-BleuProfond@3x.png in Resources */,
+				A1B2C300000000000000007E /* AppIcon-VertDEau@2x.png in Resources */,
+				A1B2C300000000000000007F /* AppIcon-VertDEau@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +428,7 @@
 				A1B2C3000000000000000022 /* ContentView.swift in Sources */,
 				A1B2C3000000000000000023 /* WiktionaryClient.swift in Sources */,
 				A1B2C3000000000000000024 /* DictionaryUpdate.swift in Sources */,
+				A1B2C3000000000000000082 /* AppIconChoice.swift in Sources */,
 				A1B2C3000000000000000025 /* KeyboardSettings.swift in Sources */,
 				A1B2C3000000000000000026 /* Palette.swift in Sources */,
 				A1B2C3000000000000000027 /* KeyboardTheme.swift in Sources */,
