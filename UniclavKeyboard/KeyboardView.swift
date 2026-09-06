@@ -21,7 +21,13 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private var accentPopup: AccentPopupView?
 
     private var handSide = KeyboardSettings.handSide
+    /// Le mode choisi dans l'application.
     private var layout = KeyboardSettings.layout
+    /// Repli temporaire vers l'AZERTY, le temps d'écrire un mot que le
+    /// dictionnaire ignore — un nom propre, le plus souvent. La touche ⊞ fait
+    /// l'aller-retour : avec cinq modes, les faire défiler éloignerait la
+    /// sortie de secours au lieu de la rapprocher.
+    private var usingFallback = false
     private var scale = KeyboardSettings.keyboardScale
     private var keyHeight = KeyboardSettings.keyHeight
 
@@ -50,6 +56,11 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Largeur des touches de service de la rangée basse, en fraction de la
     /// rangée ; l'espace absorbe ce qui reste.
     private static let serviceKeyWidth: CGFloat = 0.14
+
+    /// Disposition réellement affichée, repli compris.
+    private var effectiveLayout: KeyboardSettings.Layout {
+        usingFallback ? .azerty : layout
+    }
 
     static var preferredHeight: CGFloat {
         suggestionBarHeight + 4 * KeyboardSettings.keyHeight + 3 * rowSpacing + 2 * outerPadding + 8
@@ -109,6 +120,8 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     func reloadConfiguration() {
         handSide = KeyboardSettings.handSide
         layout = KeyboardSettings.layout
+        usingFallback = false
+        predictionEngine.prepare(grouping: effectiveLayout.grouping)
         scale = KeyboardSettings.keyboardScale
         keyHeight = KeyboardSettings.keyHeight
         // Le champ de saisie a pu changer entre deux apparitions : on repart
@@ -148,7 +161,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         rowStacks = []
         shiftButton = nil
 
-        for row in currentLayer.rows(layout: layout) {
+        for row in currentLayer.rows(layout: effectiveLayout) {
             let rowStack = UIStackView()
             rowStack.axis = .horizontal
             rowStack.spacing = Self.keySpacing
@@ -159,7 +172,8 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             let hasSpace = row.contains(.space)
             rowStack.distribution = hasSpace ? .fill : .fillEqually
 
-            for key in row {
+            // En AZERTY, la touche de repli n'aurait nulle part où mener.
+            for key in row where !(key == .switchLayout && layout == .azerty) {
                 let button = KeyButton(key: key)
                 configureActions(for: button)
                 rowStack.addArrangedSubview(button)
@@ -237,7 +251,11 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         // Pendant la frappe groupée, la barre et le champ sont pilotés par
         // `refreshPending` : le contexte ne doit pas les contredire.
         guard pendingSignature.isEmpty else { return }
-        showSuggestions(layout == .grouped ? [] : predictionEngine.suggestions(forPrefix: currentWord))
+        // En saisie groupée, la barre n'affiche que les lectures de la frappe
+        // en cours ; une suggestion par préfixe n'aurait aucun sens.
+        showSuggestions(effectiveLayout.grouping == nil
+                        ? predictionEngine.suggestions(forPrefix: currentWord)
+                        : [])
         applyAutoShiftIfNeeded()
     }
 
@@ -283,7 +301,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         case let .character(char):
             commitPending()
             insertCharacter(char)
-        case let .letterGroup(index):
+        case let .letterGroup(index, _):
             appendGroup(index)
         case .shift:
             handleShiftTap()
@@ -363,10 +381,12 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         restyle()
     }
 
+    /// Aller-retour vers l'AZERTY. Le mode choisi n'est pas modifié : on
+    /// revient à celui-ci en touchant ⊞ de nouveau.
     private func toggleLayout() {
         commitPending()
-        layout = layout == .azerty ? .grouped : .azerty
-        KeyboardSettings.layout = layout
+        usingFallback.toggle()
+        predictionEngine.prepare(grouping: effectiveLayout.grouping)
         currentLayer = .letters
         rebuildRows()
         restyle()
@@ -390,11 +410,12 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func refreshPending() {
+        guard let grouping = effectiveLayout.grouping else { return }
         let matches = predictionEngine.groupedMatches(forSignature: pendingSignature)
         // Le champ montre un mot de la longueur frappée, pour qu'effacer se
         // voie. À défaut de mot connu, la première lettre de chaque touche :
         // le texte est faux, mais il réagit à la frappe.
-        let typed = matches.exact.first ?? LetterGroups.literal(for: pendingSignature)
+        let typed = matches.exact.first ?? LetterGroups.literal(for: pendingSignature, grouping: grouping)
         replacePending(with: capitalizedIfNeeded(typed))
         // Les complétions restent offertes dans la barre, à une touche.
         let bar = Array((matches.exact + matches.completions).prefix(3))

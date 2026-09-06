@@ -5,10 +5,9 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
 
 ## Fonctionnalités
 
-- **Deux dispositions** : AZERTY complet, ou **grosses touches** — huit touches
-  de trois ou quatre lettres que le dictionnaire désambiguïse. Chaque touche est
-  alors près de trois fois plus large, ce qui pardonne l'imprécision du geste.
-  La touche ⊞ bascule de l'une à l'autre sans quitter le clavier.
+- **Cinq modes de clavier**, au choix de l'utilisateur : AZERTY, alphabétique,
+  fréquence, grosses touches et très grosses touches. Chacun répond à une gêne
+  différente ; aucun n'est meilleur dans l'absolu. Voir *Modes de clavier*.
 - **Clavier à une main** : les touches sont regroupées du côté de la main valide
   (gauche ou droite), avec une flèche ⇄ pour changer de côté en un geste.
 - **Grandes touches réglables** : largeur du clavier (60 à 100 % de l'écran) et
@@ -45,7 +44,7 @@ UniclavKeyboard/          Extension clavier (UIKit)
   AccentPopupView         Popup d'accents à l'appui long
 Shared/                   Code commun aux deux cibles
   KeyboardSettings        Réglages partagés via l'App Group
-  LetterGroups            Répartition des lettres sur les grosses touches
+  LetterGroups            Découpages des lettres sur les touches groupées
   PredictionEngine        Moteur de prédiction (dictionnaire + apprentissage)
   dictionnaire_fr.txt     Dictionnaire français classé par fréquence
 ```
@@ -133,20 +132,57 @@ déplacement manquent, que cette app couvre.
 
 Pour modifier les phrases, éditez `UniclavWatch/PhraseLibrary.swift`.
 
-## Saisie à grosses touches
+## Modes de clavier
 
-Les lettres se répartissent sur huit touches, comme sur un clavier
-téléphonique : `ABC` `DEF` `GHI` `JKL` `MNO` `PQRS` `TUV` `WXYZ`. On tape la
-touche qui porte la lettre, sans viser la lettre elle-même ; le dictionnaire
-retrouve le mot, et la barre de suggestions propose les autres lectures
-possibles de la même frappe.
+Cinq modes, choisis dans l'application. Le choix n'est pas cosmétique : chacun
+répond à une gêne distincte, et les chiffres ci-dessous sont mesurés sur le
+dictionnaire fourni, pas estimés.
 
-Mesuré sur le dictionnaire fourni : **94,7 % des mots sont trouvés du premier
-coup, 98 % parmi les cent plus fréquents**. Surtout, le plus gros groupe de
-collision compte trois mots — avec trois emplacements de suggestion, le mot
-voulu est donc toujours visible, au pire à une touche. Les collisions restantes
-sont presque toutes des paires accentuées (`donne` / `donné`) ou des voisins
-évidents (`mon` / `non` / `nom`).
+### Une lettre par touche
+
+| Mode | Déplacement du doigt | Pour qui |
+|---|---|---|
+| **AZERTY** | 3,72 | ceux qui connaissent déjà la disposition |
+| **Alphabétique** | 3,72 | ceux qui cherchent les lettres du regard |
+| **Fréquence** | **2,11** (−43 %) | ceux qui tapent beaucoup et bougent peu le bras |
+
+Le déplacement est la distance moyenne parcourue par un doigt unique entre deux
+lettres consécutives, en largeurs de touche, sur le dictionnaire pondéré par la
+fréquence des mots. Une rangée compte 1,4 fois une colonne : le pouce s'écarte
+moins facilement en hauteur qu'en largeur.
+
+L'ordre alphabétique **ne raccourcit pas** le trajet — il est identique à
+l'AZERTY à 0,1 % près. Ce qu'il change est ailleurs : on y trouve une lettre
+sans connaître la disposition, ce qui compte quand la mémoire du clavier a été
+perdue ou n'a jamais existé.
+
+La disposition « fréquence » pose les lettres en spirale depuis le centre, par
+fréquence décroissante en français. Elle économise 43 % du déplacement, mais
+elle est entièrement à apprendre : c'est un pari qui ne vaut que pour un usage
+soutenu.
+
+### Plusieurs lettres par touche
+
+On tape la touche qui porte la lettre, sans viser la lettre elle-même ; le
+dictionnaire retrouve le mot, et la barre propose les autres lectures possibles
+de la même frappe.
+
+| Mode | Premier coup | Visible dans les 3 suggestions | Pire collision |
+|---|---|---|---|
+| **Grosses touches** (8) | 94,7 % | **100 %** | 3 mots |
+| **Très grosses touches** (6) | 88,5 % | 99,1 % | 5 mots |
+
+À huit touches, le mot voulu est *toujours* visible : le plus gros groupe de
+collision compte trois mots, et la barre en affiche trois. À six touches, on
+échange un peu de précision contre des cibles nettement plus larges — le bon
+compromis pour une main qui tremble.
+
+Un découpage à quatre touches a été mesuré puis écarté : 84,2 % du premier coup
+pour un gain de largeur marginal, et une liste de modes déjà longue. Au-delà de
+cinq choix, le réglage devient lui-même un obstacle.
+
+Les collisions restantes sont presque toutes des paires accentuées
+(`donne` / `donné`) ou des voisins évidents (`mon` / `non` / `nom`).
 
 Les accents, apostrophes et traits d'union sont ignorés dans la frappe : taper
 les lettres de « aujourdhui » produit « aujourd'hui », correctement
@@ -154,9 +190,9 @@ orthographié. Les mots appris par le clavier rejoignent l'index et deviennent
 saisissables de la même façon.
 
 Un mot absent du dictionnaire — un nom propre, souvent — ne peut pas être
-deviné : la touche ⊞ ramène alors l'AZERTY le temps de l'écrire. C'est la
-limite assumée de cette disposition, et la raison pour laquelle les deux
-coexistent.
+deviné : la touche ⊞ ramène alors l'AZERTY le temps de l'écrire, puis y
+ramène. Elle fait un aller-retour plutôt que de faire défiler les cinq modes :
+une sortie de secours doit rester à une touche.
 
 Le script qui mesure ces collisions n'est pas versionné ; la répartition des
 lettres se modifie dans `Shared/LetterGroups.swift`.

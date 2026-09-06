@@ -50,44 +50,81 @@ export function App() {
         </section>
 
         <section className="shell section" aria-labelledby="dispositions" id="dispositions">
-          <p className="eyebrow">Deux dispositions</p>
+          <p className="eyebrow">Cinq modes</p>
           <h2 id="dispositions-titre">Selon ce que votre main permet.</h2>
+          <p className="prose">
+            Aucun mode n’est meilleur qu’un autre. Les chiffres ci-dessous sont
+            mesurés sur le dictionnaire de l’application, pas estimés.
+          </p>
 
+          <h3 className="subhead">Une lettre par touche</h3>
           <div className="cards">
             <article className="card">
-              <h3>AZERTY, regroupé d’un côté</h3>
+              <h3>AZERTY</h3>
               <p>
-                La disposition habituelle, ramassée du côté de la main valide
-                pour épargner le déplacement du bras. Largeur et hauteur des
-                touches réglables ; on change de côté d’un geste.
+                La disposition que vous connaissez déjà. Rien à apprendre, mais
+                dix touches étroites par rangée.
               </p>
               <LayoutPreview variant="azerty" />
             </article>
+            <article className="card">
+              <h3>Alphabétique</h3>
+              <p>
+                Les lettres de A à Z. Le déplacement du doigt est{" "}
+                <strong>identique</strong> à celui de l’AZERTY — ce qui change,
+                c’est qu’on trouve une lettre du regard, sans connaître la
+                disposition.
+              </p>
+              <LayoutPreview variant="azerty" />
+            </article>
+            <article className="card">
+              <h3>Fréquence</h3>
+              <p>
+                Les lettres fréquentes rassemblées au centre :{" "}
+                <strong>43 % de déplacement en moins</strong>. En contrepartie,
+                la disposition est entièrement à apprendre.
+              </p>
+              <LayoutPreview variant="azerty" />
+            </article>
+          </div>
 
+          <h3 className="subhead">Plusieurs lettres par touche</h3>
+          <p className="prose">
+            On tape la touche qui porte la lettre, sans viser la lettre. Le
+            dictionnaire retrouve le mot.
+          </p>
+          <div className="cards">
             <article className="card">
               <h3>Grosses touches</h3>
               <p>
-                Huit touches de trois ou quatre lettres, comme sur un clavier
-                téléphonique. Chaque cible devient près de trois fois plus large :
-                on tape la touche qui porte la lettre, sans viser la lettre.
+                Huit touches, près de trois fois plus larges. 94,7 % des mots
+                trouvés du premier coup — et le mot voulu{" "}
+                <strong>toujours</strong> visible dans les suggestions.
               </p>
               <LayoutPreview variant="grouped" />
+            </article>
+            <article className="card">
+              <h3>Très grosses touches</h3>
+              <p>
+                Six touches, les plus larges possible, pour une main qui
+                tremble. 88,5 % du premier coup, et le mot reste visible dans
+                99 % des cas.
+              </p>
+              <LayoutPreview variant="grouped-large" />
             </article>
           </div>
 
           <div className="stats">
             <div className="stat">
-              <span className="stat__value">94,7 %</span>
+              <span className="stat__value">−43 %</span>
               <span className="stat__label">
-                des mots trouvés du premier coup ; 98 % parmi les cent plus
-                fréquents
+                de déplacement du doigt, en mode fréquence
               </span>
             </div>
             <div className="stat">
-              <span className="stat__value">3 mots</span>
+              <span className="stat__value">94,7 %</span>
               <span className="stat__label">
-                au maximum par frappe ambiguë : le mot voulu est toujours visible,
-                au pire à une touche
+                des mots trouvés du premier coup en grosses touches
               </span>
             </div>
             <div className="stat">

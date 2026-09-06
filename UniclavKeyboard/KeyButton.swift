@@ -56,10 +56,11 @@ final class KeyButton: UIButton {
         case .character:
             titleLabel?.font = .systemFont(ofSize: letterSize, weight: .regular)
         case .letterGroup:
-            // « PQRS » doit tenir sans déborder d'une touche large.
+            // « MNOPQ » est le libellé le plus long : il doit tenir sans
+            // déborder, quitte à se réduire.
             titleLabel?.font = .systemFont(ofSize: largeLabels ? 21 : 18, weight: .semibold)
             titleLabel?.adjustsFontSizeToFitWidth = true
-            titleLabel?.minimumScaleFactor = 0.6
+            titleLabel?.minimumScaleFactor = 0.55
         default:
             titleLabel?.font = .systemFont(ofSize: specialSize, weight: .medium)
         }
@@ -89,8 +90,8 @@ final class KeyButton: UIButton {
         case let .character(char):
             let title = uppercase ? char.uppercased(with: Locale(identifier: "fr_FR")) : char
             setTitle(title, for: .normal)
-        case let .letterGroup(index):
-            setTitle(LetterGroups.all[index].uppercased(), for: .normal)
+        case let .letterGroup(_, letters):
+            setTitle(letters.uppercased(), for: .normal)
         case .space:
             setTitle("espace", for: .normal)
         case .numbers:
@@ -119,8 +120,8 @@ final class KeyButton: UIButton {
     private func configureAccessibility() {
         switch key {
         case let .character(char): accessibilityLabel = char
-        case let .letterGroup(index):
-            accessibilityLabel = "Lettres " + LetterGroups.all[index].uppercased()
+        case let .letterGroup(_, letters):
+            accessibilityLabel = "Lettres " + letters.uppercased()
         case .shift: accessibilityLabel = "Majuscule"
         case .delete: accessibilityLabel = "Effacer"
         case .space: accessibilityLabel = "Espace"

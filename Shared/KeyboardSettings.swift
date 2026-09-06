@@ -6,19 +6,59 @@ enum KeyboardSettings {
     static let appGroupID = "group.com.maxlestage.uniclav"
 
     /// Disposition des touches de lettres.
+    ///
+    /// Chaque mode répond à une gêne différente, et aucun n'est meilleur dans
+    /// l'absolu : le bon mode est celui qui convient à cette main-là.
+    /// Les valeurs brutes `azerty` et `grouped` sont conservées telles quelles,
+    /// pour ne pas réinitialiser le réglage des utilisateurs existants.
     enum Layout: String, CaseIterable, Identifiable {
-        /// AZERTY complet : une lettre par touche, dix par rangée.
+        /// Une lettre par touche, dix par rangée, dans l'ordre habituel.
         case azerty
-        /// Huit grosses touches de trois ou quatre lettres, désambiguïsées
-        /// par le dictionnaire.
+        /// Les mêmes touches, mais dans l'ordre alphabétique.
+        case alphabetical
+        /// Les lettres les plus fréquentes rassemblées au centre.
+        case frequency
+        /// Huit touches de trois ou quatre lettres, désambiguïsées par le
+        /// dictionnaire.
         case grouped
+        /// Six touches de quatre ou cinq lettres : les plus larges possible.
+        case groupedLarge
 
         var id: String { rawValue }
 
         var label: String {
             switch self {
-            case .azerty: return "AZERTY complet"
+            case .azerty: return "AZERTY"
+            case .alphabetical: return "Alphabétique"
+            case .frequency: return "Fréquence"
             case .grouped: return "Grosses touches"
+            case .groupedLarge: return "Très grosses touches"
+            }
+        }
+
+        /// Ce que le mode apporte, et ce qu'il coûte. Mesuré, pas supposé.
+        var summary: String {
+            switch self {
+            case .azerty:
+                return "La disposition que vous connaissez déjà. Aucune adaptation à faire, mais dix touches étroites par rangée."
+            case .alphabetical:
+                return "Les lettres de A à Z. Le déplacement du doigt est identique à l'AZERTY : ce qui change, c'est qu'une lettre se trouve du regard, sans connaître la disposition."
+            case .frequency:
+                return "Les lettres fréquentes rassemblées au centre, ce qui réduit de 43 % le déplacement du doigt. En contrepartie, la disposition est à apprendre entièrement."
+            case .grouped:
+                return "Huit touches trois fois plus larges. Le dictionnaire retrouve le mot : 94,7 % du premier coup, et le mot voulu toujours visible dans les suggestions."
+            case .groupedLarge:
+                return "Six touches, les plus larges possible, pour une main qui tremble. 88,5 % du premier coup, et le mot reste visible dans 99 % des cas."
+            }
+        }
+
+        /// Répartition des lettres quand le mode regroupe plusieurs lettres
+        /// par touche ; nil lorsqu'une touche ne porte qu'une lettre.
+        var grouping: LetterGroups.Grouping? {
+            switch self {
+            case .grouped: return .eight
+            case .groupedLarge: return .six
+            case .azerty, .alphabetical, .frequency: return nil
             }
         }
     }
