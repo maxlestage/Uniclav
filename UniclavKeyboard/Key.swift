@@ -18,17 +18,47 @@ enum Key: Equatable {
     case globe     // changement de clavier iOS
     case switchLayout  // bascule vers l'AZERTY, et retour
 
-    /// Variantes proposées par appui long (accents français).
+    /// Variantes proposées par appui long. Les lettres portent leurs accents,
+    /// la ponctuation sa typographie française — l'apostrophe courbe et les
+    /// guillemets ne s'obtiennent nulle part ailleurs sur un clavier iOS.
     static let accentVariants: [String: [String]] = [
-        "a": ["à", "â", "æ", "á", "ä"],
+        "a": ["à", "â", "ä", "á", "æ"],
         "e": ["é", "è", "ê", "ë"],
         "i": ["î", "ï", "í"],
-        "o": ["ô", "œ", "ö", "ó"],
+        "o": ["ô", "ö", "œ", "ó"],
         "u": ["ù", "û", "ü", "ú"],
         "c": ["ç"],
         "y": ["ÿ"],
         "n": ["ñ"],
+        "'": ["’"],
+        "\"": ["«", "»"],
+        "-": ["–", "—"],
+        ".": ["…"],
     ]
+
+    /// Variantes d'une touche qui porte plusieurs lettres : celles de chacune
+    /// de ses lettres, dans l'ordre, sans doublon.
+    ///
+    /// C'est ce qui rend l'appui long utilisable dans les modes à grosses
+    /// touches, où il n'existait pas : « ABC » maintenue propose à â ä á æ ç.
+    static func variants(forLetters letters: String) -> [String] {
+        var result: [String] = []
+        for letter in letters {
+            for variant in accentVariants[String(letter)] ?? [] where !result.contains(variant) {
+                result.append(variant)
+            }
+        }
+        return result
+    }
+
+    /// Variantes de n'importe quelle touche, quel que soit le mode.
+    var longPressVariants: [String] {
+        switch self {
+        case let .character(char): return Key.accentVariants[char] ?? []
+        case let .letterGroup(_, letters): return Key.variants(forLetters: letters)
+        default: return []
+        }
+    }
 }
 
 /// Plan de clavier : lettres, chiffres ou symboles. Le plan des lettres

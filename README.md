@@ -24,9 +24,11 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
   clavier ne produit pas autrement — toutes les voyelles accentuées, ç, œ,
   l'apostrophe typographique et les guillemets français. Voir *Caractères
   spéciaux*.
-- **Accents par appui long** : maintenir `e` propose é è ê ë, etc. Glisser le
-  doigt pour choisir. La recherche de suggestions ignore les accents
-  (« ecol » → « école »).
+- **Appui long sur n'importe quelle touche, dans les six modes** : maintenir
+  `e` propose é è ê ë ; maintenir la grosse touche `ABC` propose à â ä á æ ç.
+  On choisit en glissant le doigt, **ou en relâchant puis en touchant** la
+  variante — le popup reste alors ouvert. La recherche de suggestions ignore
+  les accents (« ecol » → « école »). Voir *Appuis longs*.
 - **Confort de frappe** : majuscule automatique en début de phrase, verrouillage
   majuscules par double appui sur ⇧, point par double espace, effacement continu
   en maintenant ⌫, contraste renforcé et grandes lettres en option.
@@ -208,6 +210,44 @@ délai, un nouvel appui sur la même touche écrit une lettre de plus au lieu de
 changer la précédente — c'est ainsi qu'on écrit deux lettres du même groupe à
 la suite.
 
+## Appuis longs
+
+Toute touche qui porte des variantes les propose par appui long, **dans les six
+modes**. C'est le chemin complet : tout caractère spécial du clavier s'y trouve,
+y compris ceux que le pavé « éàç » ne peut pas loger.
+
+| Touche maintenue | Variantes |
+|---|---|
+| `a` · `ABC` · `ABCD` | à â ä á æ (+ ç sur la touche groupée) |
+| `e` · `DEF` · `EFGH` | é è ê ë |
+| `i` · `GHI` · `IJKL` | î ï í |
+| `o` · `MNO` · `MNOPQ` | ô ö œ ó (+ ñ sur la touche groupée) |
+| `u` · `TUV` · `RSTU` | ù û ü ú |
+| `y` · `WXYZ` · `VWXYZ` | ÿ |
+| `'` | ’ |
+| `"` | « » |
+| `-` | – — |
+| `.` | … |
+
+Une touche à plusieurs lettres réunit les variantes de chacune de ses lettres,
+sans doublon : c'est ce qui rend l'appui long utilisable dans les trois modes à
+grosses touches, où il n'existait pas du tout.
+
+### Deux façons de choisir
+
+Maintenir une touche immobile, glisser jusqu'à la bonne variante, puis relâcher
+au bon endroit fait **trois gestes précis enchaînés**. C'est beaucoup demander à
+une main qui tremble ou qui fatigue — c'est-à-dire la main qu'on vise.
+
+- **En glissant**, sans relâcher, comme sur iOS.
+- **En touchant** : si le doigt n'a pas bougé de plus de 12 pt, relâcher laisse
+  le popup ouvert, et la variante se choisit d'un appui. Rien n'est
+  présélectionné dans ce cas — relâcher ne doit pas écrire une variante qu'on
+  n'a pas visée. Un appui à côté ferme le popup sans rien écrire.
+
+Les cases font 50 pt de large, au-dessus du minimum tactile d'iOS, puisqu'elles
+peuvent désormais être visées.
+
 ## Caractères spéciaux
 
 Une touche **« éàç »** ouvre un pavé de dix-huit caractères, sur six colonnes.
@@ -234,6 +274,11 @@ touches n'en avaient donc aucun :
 Six colonnes et non dix : les touches restent larges dans tous les modes. Une
 lettre accentuée se tape rarement du premier coup, d'où l'effacement gardé sur
 la même rangée.
+
+Le pavé ne loge pas ÿ, ñ ni æ, faute de place sur trois rangées de six ; l'appui
+long les donne, dans les six modes. Les deux chemins coexistent parce qu'ils ne
+demandent pas le même geste : le pavé ne réclame que des appuis, l'appui long
+réclame de tenir la touche.
 
 ## Suggestions dans tous les modes
 

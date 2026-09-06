@@ -181,6 +181,14 @@ export function App() {
               autrement : toutes les voyelles accentuées, ç, œ, l’apostrophe
               typographique et les guillemets français.
             </li>
+            <li>
+              <strong>L’appui long</strong> donne les variantes de n’importe
+              quelle touche, y compris les grosses : maintenir « ABC » propose
+              à â ä á æ ç. On choisit en glissant, ou en relâchant puis en
+              touchant — tenir, glisser et relâcher au bon endroit fait trois
+              gestes précis enchaînés, et ce n’est pas ce qu’on peut demander
+              ici.
+            </li>
           </ul>
         </section>
 

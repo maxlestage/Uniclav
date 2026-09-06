@@ -19,6 +19,15 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private var lastSpaceTap: Date = .distantPast
     private var deleteTimer: Timer?
     private var accentPopup: AccentPopupView?
+    /// Voile transparent posé sous un popup resté ouvert : un appui à côté le
+    /// ferme, sans atteindre la touche qui se trouve dessous.
+    private var popupDismissLayer: UIView?
+    /// Le doigt a-t-il glissé depuis le début de l'appui long ? S'il n'a pas
+    /// bougé, relâcher laisse le popup ouvert au lieu de choisir à l'aveugle.
+    private var longPressMoved = false
+    private var longPressOrigin: CGPoint = .zero
+    /// Au carré, pour comparer sans racine carrée.
+    private static let longPressMoveThreshold: CGFloat = 12 * 12
 
     private var handSide = KeyboardSettings.handSide
     /// Le mode choisi dans l'application.
@@ -135,6 +144,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
     /// Relit les réglages partagés et reconstruit le clavier.
     func reloadConfiguration() {
+        dismissAccentPopup()
         handSide = KeyboardSettings.handSide
         layout = KeyboardSettings.layout
         palette = KeyboardSettings.palette
@@ -224,9 +234,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
     private func configureActions(for button: KeyButton) {
         switch button.key {
-        case .character:
+        case .character, .letterGroup:
             button.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
-            if case let .character(char) = button.key, Key.accentVariants[char] != nil {
+            if !button.key.longPressVariants.isEmpty {
                 let longPress = UILongPressGestureRecognizer(target: self, action: #selector(keyLongPressed(_:)))
                 longPress.minimumPressDuration = 0.35
                 button.addGestureRecognizer(longPress)
@@ -410,6 +420,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func switchLayer(to layer: KeyboardLayer) {
+        dismissAccentPopup()
         commitPending()
         currentLayer = layer
         rebuildRows()
@@ -419,6 +430,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// Aller-retour vers l'AZERTY. Le mode choisi n'est pas modifié : on
     /// revient à celui-ci en touchant ⊞ de nouveau.
     private func toggleLayout() {
+        dismissAccentPopup()
         commitPending()
         usingFallback.toggle()
         predictionEngine.prepare(grouping: effectiveLayout.grouping)
@@ -614,32 +626,47 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     // MARK: - Accents par appui long
 
     @objc private func keyLongPressed(_ gesture: UILongPressGestureRecognizer) {
-        guard let button = gesture.view as? KeyButton,
-              case let .character(char) = button.key,
-              let variants = Key.accentVariants[char] else { return }
+        guard let button = gesture.view as? KeyButton else { return }
+        let variants = button.key.longPressVariants
+        guard !variants.isEmpty else { return }
 
         switch gesture.state {
         case .began:
+            dismissAccentPopup()
+            longPressMoved = false
+            longPressOrigin = gesture.location(in: self)
             let displayed = shiftState != .off
                 ? variants.map { $0.uppercased(with: Locale(identifier: "fr_FR")) }
                 : variants
             let popup = AccentPopupView(variants: displayed)
+            popup.onPick = { [weak self] variant in
+                self?.insertVariant(variant)
+                self?.dismissAccentPopup()
+            }
             addSubview(popup)
             let buttonFrame = button.convert(button.bounds, to: self)
             popup.place(above: buttonFrame, in: bounds)
             accentPopup = popup
         case .changed:
-            accentPopup?.updateSelection(for: gesture.location(in: self))
-        case .ended:
-            if let selected = accentPopup?.selectedVariant {
-                controller.textDocumentProxy.insertText(selected)
-                if shiftState == .on {
-                    shiftState = .off
-                    updateShiftAppearance()
-                }
-                updateFromContext()
+            let point = gesture.location(in: self)
+            let dx = point.x - longPressOrigin.x
+            let dy = point.y - longPressOrigin.y
+            if dx * dx + dy * dy > Self.longPressMoveThreshold {
+                longPressMoved = true
             }
-            dismissAccentPopup()
+            guard longPressMoved else { return }
+            accentPopup?.updateSelection(for: point)
+        case .ended:
+            // Le doigt a glissé : on écrit la variante survolée, comme sur iOS.
+            // Il n'a pas bougé : le popup reste, et la variante se touche.
+            if longPressMoved {
+                if let selected = accentPopup?.selectedVariant {
+                    insertVariant(selected)
+                }
+                dismissAccentPopup()
+            } else {
+                latchAccentPopup()
+            }
         case .cancelled, .failed:
             dismissAccentPopup()
         default:
@@ -647,8 +674,40 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         }
     }
 
+    /// Écrit une variante comme une lettre ordinaire : elle interrompt le mot
+    /// groupé en cours et le cycle d'appuis répétés, sans quoi la touche
+    /// suivante effacerait la lettre qu'on vient de choisir.
+    private func insertVariant(_ variant: String) {
+        commitPending()
+        controller.textDocumentProxy.insertText(variant)
+        if shiftState == .on {
+            shiftState = .off
+            updateShiftAppearance()
+        }
+        updateFromContext()
+    }
+
+    /// Laisse le popup ouvert, sous un voile qui absorbe l'appui à côté.
+    private func latchAccentPopup() {
+        guard let popup = accentPopup else { return }
+        let veil = UIView(frame: bounds)
+        veil.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        veil.backgroundColor = .clear
+        veil.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                         action: #selector(dismissAccentPopupFromTap)))
+        insertSubview(veil, belowSubview: popup)
+        popupDismissLayer = veil
+        popup.enableTapSelection()
+    }
+
+    @objc private func dismissAccentPopupFromTap() {
+        dismissAccentPopup()
+    }
+
     private func dismissAccentPopup() {
         accentPopup?.removeFromSuperview()
         accentPopup = nil
+        popupDismissLayer?.removeFromSuperview()
+        popupDismissLayer = nil
     }
 }
