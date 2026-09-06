@@ -53,6 +53,7 @@ enum KeyboardSettings {
         static let lastDictionaryUpdate = "lastDictionaryUpdate"
         static let dictionaryWordCount = "dictionaryWordCount"
         static let coreVocabularyMerged = "coreVocabularyMerged"
+        static let shareUnknownWords = "shareUnknownWords"
     }
 
     /// Disposition des lettres.
@@ -113,6 +114,18 @@ enum KeyboardSettings {
     static var dictionaryWordCount: Int {
         get { defaults.integer(forKey: Key.dictionaryWordCount) }
         set { defaults.set(newValue, forKey: Key.dictionaryWordCount) }
+    }
+
+    /// Soumettre au Wiktionnaire les mots que le clavier n'a pas reconnus.
+    ///
+    /// Désactivé par défaut, et volontairement séparé de la mise à jour du
+    /// dictionnaire. Un mot absent d'un dictionnaire français est le plus
+    /// souvent un nom propre — un prénom, une commune, le nom d'un
+    /// praticien : ce sont précisément les mots qu'on n'envoie pas à un tiers
+    /// sans l'avoir demandé. Le vocabulaire de base, lui, ne révèle rien.
+    static var shareUnknownWords: Bool {
+        get { defaults.bool(forKey: Key.shareUnknownWords) }
+        set { defaults.set(newValue, forKey: Key.shareUnknownWords) }
     }
 
     /// Le vocabulaire de base du Wiktionnaire n'est fusionné qu'une fois.

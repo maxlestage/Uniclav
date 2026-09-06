@@ -4,6 +4,7 @@ import UIKit
 struct ContentView: View {
     @EnvironmentObject private var updater: DictionaryUpdater
     @State private var autoUpdate = KeyboardSettings.autoUpdateDictionary
+    @State private var shareUnknown = KeyboardSettings.shareUnknownWords
     @State private var handSide = KeyboardSettings.handSide
     @State private var layout = KeyboardSettings.layout
     @State private var keyboardScale = KeyboardSettings.keyboardScale
@@ -128,6 +129,12 @@ struct ContentView: View {
             Toggle("Mise à jour automatique", isOn: $autoUpdate)
                 .onChange(of: autoUpdate) { KeyboardSettings.autoUpdateDictionary = $0 }
 
+            Toggle("Soumettre les mots inconnus", isOn: $shareUnknown)
+                .onChange(of: shareUnknown) { KeyboardSettings.shareUnknownWords = $0 }
+            Text("Un mot que le clavier ne connaît pas est le plus souvent un nom propre : un prénom, une commune, le nom d'un praticien. Activez cette option pour que ces mots soient vérifiés auprès du Wiktionnaire et ajoutés avec leurs accents — ils quitteront alors l'appareil. Désactivée, la frappe continue d'apprendre vos mots, mais uniquement en local.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
             Button {
                 Task { await updater.update(force: true) }
             } label: {
@@ -154,7 +161,7 @@ struct ContentView: View {
         } header: {
             Text("Dictionnaire")
         } footer: {
-            Text("Les mots que vous écrivez et que le clavier ne connaît pas sont vérifiés auprès du Wiktionnaire, puis ajoutés avec leurs accents. Le clavier lui-même n'accède jamais au réseau : c'est cette application qui télécharge, une fois par jour au plus.")
+            Text("Le clavier n'accède jamais au réseau : c'est cette application qui télécharge, une fois par jour au plus, et elle seule.")
         }
     }
 

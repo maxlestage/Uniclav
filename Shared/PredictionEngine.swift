@@ -72,11 +72,16 @@ final class PredictionEngine {
         return results
     }
 
-    /// Mots correspondant à une suite de touches groupées, du plus probable
-    /// au moins probable. Les correspondances exactes (même longueur que la
-    /// frappe) passent avant les mots plus longs, qui valent alors complétion.
-    func groupedCandidates(forSignature signature: String, limit: Int = 3) -> [String] {
-        guard !signature.isEmpty else { return [] }
+    /// Mots correspondant à une suite de touches groupées, séparés en deux :
+    /// ceux qui font exactement la longueur frappée, et les mots plus longs
+    /// qui valent complétion.
+    ///
+    /// La distinction n'est pas cosmétique. Si le champ affichait la meilleure
+    /// complétion, effacer une touche laisserait souvent le même mot à
+    /// l'écran — quatre touches de « merci » proposent encore « merci » — et
+    /// l'effacement paraîtrait sans effet.
+    func groupedMatches(forSignature signature: String) -> (exact: [String], completions: [String]) {
+        guard !signature.isEmpty else { return ([], []) }
 
         var exact: [String] = []
         var longer: [String] = []
@@ -103,7 +108,14 @@ final class PredictionEngine {
                 consider(words[index], wordSignature)
             }
         }
-        return Array((exact + longer).prefix(limit))
+        return (exact, longer)
+    }
+
+    /// Liste unique proposée dans la barre : exactes d'abord, complétions
+    /// ensuite.
+    func groupedCandidates(forSignature signature: String, limit: Int = 3) -> [String] {
+        let matches = groupedMatches(forSignature: signature)
+        return Array((matches.exact + matches.completions).prefix(limit))
     }
 
     /// Mémorise un mot validé par l'utilisateur (espace, ponctuation ou
@@ -115,8 +127,10 @@ final class PredictionEngine {
 
         let normalized = Self.normalize(word)
         // Mot absent du dictionnaire : l'application ira demander au
-        // Wiktionnaire s'il est français, et l'ajoutera pour de bon.
-        if !knownNormalized.contains(normalized) {
+        // Wiktionnaire s'il est français, et l'ajoutera pour de bon — mais
+        // seulement si l'utilisateur l'a explicitement autorisé, ces mots-là
+        // étant surtout des noms propres.
+        if KeyboardSettings.shareUnknownWords, !knownNormalized.contains(normalized) {
             PendingWords.enqueue(word)
         }
         // Inutile d'apprendre un mot déjà en tête du dictionnaire.
