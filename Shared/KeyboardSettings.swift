@@ -141,8 +141,13 @@ enum KeyboardSettings {
     }
 
     /// Couleurs réellement appliquées, thème choisi ou couleurs personnelles.
-    static var palette: KeyboardPalette {
-        if let preset = theme.preset {
+    ///
+    /// L'apparence est demandée à l'appelant plutôt que lue ici : seule la vue
+    /// du clavier sait ce que le champ de saisie réclame, et une propriété
+    /// statique lue au mauvais moment renverrait le clair sous un iPhone en
+    /// mode sombre.
+    static func palette(dark: Bool) -> KeyboardPalette {
+        if let preset = theme.preset(dark: dark) {
             return KeyboardPalette(keyFace: preset.face, keyText: preset.text)
         }
         return KeyboardPalette(keyFace: customKeyFace, keyText: customKeyText)

@@ -689,3 +689,9 @@ a {
   border-radius: 0.5625rem;
   box-shadow: 0 0 0 1px rgb(38 34 29 / 0.12);
 }
+
+.theme__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}

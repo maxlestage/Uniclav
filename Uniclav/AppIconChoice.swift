@@ -33,7 +33,16 @@ struct AppIconChoice: Identifiable, Equatable {
         AppIconChoice(alternateName: "NoirSurJaune", label: "Noir sur jaune", theme: .blackOnYellow),
         AppIconChoice(alternateName: "BleuProfond", label: "Bleu profond", theme: .deepBlue),
         AppIconChoice(alternateName: "VertDEau", label: "Vert d'eau", theme: .seaGreen),
+        AppIconChoice(alternateName: "Neon", label: "Néon", theme: .neon),
+        AppIconChoice(alternateName: "TerminalAmbre", label: "Terminal ambre", theme: .amberTerminal),
+        AppIconChoice(alternateName: "Bonbon", label: "Bonbon", theme: .candy),
+        AppIconChoice(alternateName: "Agrume", label: "Agrume", theme: .citrus),
+        AppIconChoice(alternateName: "Lavande", label: "Lavande", theme: .lavender),
+        AppIconChoice(alternateName: "Prune", label: "Prune", theme: .plum),
     ]
+
+    /// « Automatique » n'a pas d'icône : il a deux palettes, quand une icône
+    /// de rechange iOS n'en a qu'une.
 
     /// L'icône posée en ce moment.
     static var current: AppIconChoice {

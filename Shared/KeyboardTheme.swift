@@ -69,9 +69,15 @@ struct KeyboardPalette {
     var contrastRatio: Double { keyFace.contrastRatio(with: keyText) }
 }
 
-/// Thèmes proposés. Tous atteignent le niveau AAA de WCAG (rapport ≥ 7:1) :
-/// un clavier illisible n'est pas une option esthétique.
+/// Thèmes proposés. Tous atteignent le niveau AAA de WCAG (rapport ≥ 7:1),
+/// les fantaisistes compris : un clavier illisible n'est pas une option
+/// esthétique, et l'amusement n'est pas une raison de faire une exception.
 enum KeyboardTheme: String, CaseIterable, Identifiable {
+    /// Suit l'apparence de l'iPhone : clair le jour, sombre la nuit, comme le
+    /// clavier du système.
+    case system
+
+    // Sobres.
     case inkOnSand
     case night
     case maxContrast
@@ -79,13 +85,33 @@ enum KeyboardTheme: String, CaseIterable, Identifiable {
     case blackOnYellow
     case deepBlue
     case seaGreen
+
+    // Fantaisistes.
+    case neon
+    case amberTerminal
+    case candy
+    case citrus
+    case lavender
+    case plum
+
     /// Couleurs choisies par l'utilisateur, dans les réglages.
     case custom
 
     var id: String { rawValue }
 
+    /// Les thèmes destinés à faire plaisir plutôt qu'à se faire oublier. Ils
+    /// sont présentés à part : quinze lignes d'affilée seraient elles-mêmes un
+    /// obstacle.
+    var isFanciful: Bool {
+        switch self {
+        case .neon, .amberTerminal, .candy, .citrus, .lavender, .plum: return true
+        default: return false
+        }
+    }
+
     var label: String {
         switch self {
+        case .system: return "Automatique"
         case .inkOnSand: return "Encre sur sable"
         case .night: return "Nuit"
         case .maxContrast: return "Contraste maximal"
@@ -93,18 +119,44 @@ enum KeyboardTheme: String, CaseIterable, Identifiable {
         case .blackOnYellow: return "Noir sur jaune"
         case .deepBlue: return "Bleu profond"
         case .seaGreen: return "Vert d'eau"
+        case .neon: return "Néon"
+        case .amberTerminal: return "Terminal ambre"
+        case .candy: return "Bonbon"
+        case .citrus: return "Agrume"
+        case .lavender: return "Lavande"
+        case .plum: return "Prune"
         case .custom: return "Mes couleurs"
         }
     }
 
-    /// Couleurs du thème ; nil pour « Mes couleurs », qui les tire des
-    /// réglages.
-    var preset: (face: KeyboardColor, text: KeyboardColor)? {
+    /// Ce que le thème évoque, pour les fantaisistes dont le nom seul ne dit
+    /// rien du rendu.
+    var note: String? {
+        switch self {
+        case .system:
+            return "Encre sur sable le jour, Nuit le soir. Le clavier suit l'apparence de l'iPhone, sans rien demander."
+        case .neon: return "Vert fluo sur presque noir."
+        case .amberTerminal: return "L'ambre des écrans à phosphore."
+        case .candy: return "Rose dragée, lettres prune."
+        case .citrus: return "Un fond d'écorce d'orange."
+        case .lavender: return "Lilas pâle, lettres violettes."
+        case .plum: return "L'inverse de Lavande : fond profond, lettres pâles."
+        default: return nil
+        }
+    }
+
+    /// Le couple de couleurs, pour une apparence donnée.
+    ///
+    /// L'apparence ne change que pour « Automatique » ; elle est passée à tous
+    /// pour que l'appelant n'ait pas à savoir lequel s'en sert.
+    /// nil pour « Mes couleurs », qui les tire des réglages.
+    func preset(dark: Bool) -> (face: KeyboardColor, text: KeyboardColor)? {
         func pair(_ face: String, _ text: String) -> (KeyboardColor, KeyboardColor)? {
             guard let f = KeyboardColor(hex: face), let t = KeyboardColor(hex: text) else { return nil }
             return (f, t)
         }
         switch self {
+        case .system: return dark ? pair("3A3A3E", "F2EBDE") : pair("FBF8F2", "26221D")
         case .inkOnSand: return pair("FBF8F2", "26221D")
         case .night: return pair("3A3A3E", "F2EBDE")
         case .maxContrast: return pair("FFFFFF", "000000")
@@ -112,6 +164,12 @@ enum KeyboardTheme: String, CaseIterable, Identifiable {
         case .blackOnYellow: return pair("FFD400", "141414")
         case .deepBlue: return pair("12284B", "F5F7FA")
         case .seaGreen: return pair("E8F1EC", "16352B")
+        case .neon: return pair("0B0B12", "39FF14")
+        case .amberTerminal: return pair("0D1F0D", "FFB000")
+        case .candy: return pair("FFD9E8", "4A0E2E")
+        case .citrus: return pair("FFB703", "3A1F04")
+        case .lavender: return pair("EDE7FF", "2E1065")
+        case .plum: return pair("2A0A3D", "F3D9FF")
         case .custom: return nil
         }
     }

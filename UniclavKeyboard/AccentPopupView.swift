@@ -11,6 +11,7 @@ import UIKit
 final class AccentPopupView: UIView {
 
     private let variants: [String]
+    private let palette: KeyboardPalette
     private var labels: [UILabel] = []
     private var selectedIndex = 0
 
@@ -26,10 +27,11 @@ final class AccentPopupView: UIView {
         variants.indices.contains(selectedIndex) ? variants[selectedIndex] : nil
     }
 
-    init(variants: [String]) {
+    init(variants: [String], palette: KeyboardPalette) {
         self.variants = variants
+        self.palette = palette
         super.init(frame: .zero)
-        backgroundColor = KeyboardSettings.palette.keyFace.uiColor
+        backgroundColor = palette.keyFace.uiColor
         layer.cornerRadius = 10
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -103,7 +105,6 @@ final class AccentPopupView: UIView {
     private func highlight(index: Int) {
         selectedIndex = index
         for (i, label) in labels.enumerated() {
-            let palette = KeyboardSettings.palette
             label.backgroundColor = i == index ? palette.keyText.uiColor : .clear
             label.textColor = i == index ? palette.keyFace.uiColor : palette.keyText.uiColor
         }

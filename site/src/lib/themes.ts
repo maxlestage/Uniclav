@@ -73,6 +73,15 @@ export type Theme = {
   note: string;
 };
 
+/** Le thème « Automatique » : deux palettes, choisies par l'apparence de
+ *  l'iPhone. Il n'a pas d'icône — une icône de rechange iOS n'en a qu'une. */
+export const SYSTEM_THEME = {
+  label: "Automatique",
+  note: "Encre sur sable le jour, Nuit le soir. Le clavier suit l’apparence de l’iPhone, comme celui du système.",
+  light: { face: "FBF8F2", text: "26221D" },
+  dark: { face: "3A3A3E", text: "F2EBDE" },
+} as const;
+
 /** Les sept thèmes fournis, avec les valeurs exactes de l'application. */
 export const THEMES: readonly Theme[] = [
   {
@@ -123,6 +132,53 @@ export const THEMES: readonly Theme[] = [
     face: "E8F1EC",
     text: "16352B",
     note: "Un fond clair moins blanc, plus doux sous une lumière crue.",
+  },
+];
+
+/** Les thèmes qui n'ont d'autre raison d'être que le plaisir. Ils passent la
+ *  même mesure que les autres : l'amusement ne dispense pas de lire. */
+export const FANCIFUL_THEMES: readonly Theme[] = [
+  {
+    id: "neon",
+    label: "Néon",
+    face: "0B0B12",
+    text: "39FF14",
+    note: "Vert fluo sur presque noir.",
+  },
+  {
+    id: "amberTerminal",
+    label: "Terminal ambre",
+    face: "0D1F0D",
+    text: "FFB000",
+    note: "L’ambre des écrans à phosphore.",
+  },
+  {
+    id: "candy",
+    label: "Bonbon",
+    face: "FFD9E8",
+    text: "4A0E2E",
+    note: "Rose dragée, lettres prune.",
+  },
+  {
+    id: "citrus",
+    label: "Agrume",
+    face: "FFB703",
+    text: "3A1F04",
+    note: "Un fond d’écorce d’orange.",
+  },
+  {
+    id: "lavender",
+    label: "Lavande",
+    face: "EDE7FF",
+    text: "2E1065",
+    note: "Lilas pâle, lettres violettes.",
+  },
+  {
+    id: "plum",
+    label: "Prune",
+    face: "2A0A3D",
+    text: "F3D9FF",
+    note: "L’inverse de Lavande : fond profond, lettres pâles.",
   },
 ];
 

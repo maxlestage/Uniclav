@@ -2,7 +2,8 @@ import { site } from "./config.ts";
 import { Mark } from "./components/Mark.tsx";
 import { KeyPadDemo } from "./components/KeyPadDemo.tsx";
 import { LayoutPreview } from "./components/LayoutPreview.tsx";
-import { ThemeShowcase } from "./components/ThemeShowcase.tsx";
+import { SystemTheme, ThemeShowcase } from "./components/ThemeShowcase.tsx";
+import { FANCIFUL_THEMES } from "./lib/themes.ts";
 import { Footer } from "./components/Footer.tsx";
 
 export function App() {
@@ -196,9 +197,17 @@ export function App() {
           <p className="eyebrow">Couleurs</p>
           <h2 id="couleurs-titre">Vos couleurs, mesurées.</h2>
           <p className="prose">
-            Sept thèmes, du sable à l’encre jusqu’au jaune sur noir des aides à
-            la basse vision. Ou les vôtres : le fond des touches et la couleur
-            des lettres se règlent séparément, le reste en est dérivé.
+            Quatorze thèmes, du sable à l’encre jusqu’au jaune sur noir des
+            aides à la basse vision, en passant par six de pure fantaisie. Ou
+            les vôtres : le fond des touches et la couleur des lettres se
+            règlent séparément, le reste en est dérivé.
+          </p>
+          <p className="prose">
+            Et un <strong>automatique</strong>, qui suit l’apparence de
+            l’iPhone : clair le jour, sombre le soir, comme le clavier du
+            système. Si le champ de saisie réclame lui-même une apparence, elle
+            l’emporte — un champ sombre dans une application claire garde un
+            clavier sombre.
           </p>
           <p className="prose">
             Chaque thème fourni atteint le niveau <strong>AAA</strong> de WCAG,
@@ -209,12 +218,26 @@ export function App() {
             réglage illisible n’est pas une option esthétique.
           </p>
 
+          <h3 className="subhead">Le clavier suit l’iPhone</h3>
+          <SystemTheme />
+
+          <h3 className="subhead">Sept thèmes fixes</h3>
           <ThemeShowcase />
 
+          <h3 className="subhead">Six de fantaisie</h3>
           <p className="prose">
-            <strong>L’icône suit.</strong> Chaque thème a la sienne, à choisir
-            dans l’application — indépendamment du clavier, iOS affichant sa
-            propre alerte à chaque changement d’icône.
+            Ceux-là n’ont d’autre raison d’être que le plaisir. Ils passent la
+            même mesure : <strong>tous atteignent AAA</strong>. Se faire plaisir
+            ne dispense pas de lire ce qu’on écrit.
+          </p>
+          <ThemeShowcase themes={FANCIFUL_THEMES} />
+
+          <p className="prose">
+            <strong>L’icône suit.</strong> Les treize thèmes fixes ont chacun
+            la leur, à choisir dans l’application — indépendamment du clavier,
+            iOS affichant sa propre alerte à chaque changement d’icône. Le
+            thème automatique n’en a pas : il a deux palettes, quand une icône
+            de rechange iOS n’en a qu’une.
           </p>
 
           <p className="prose note">

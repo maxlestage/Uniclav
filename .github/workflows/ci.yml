@@ -30,11 +30,14 @@ jobs:
   # pendante ou un fichier manquant ne se verrait sinon qu'au bout des trois
   # minutes du runner macOS ; ici, en deux secondes sur Linux.
   project:
-    name: Projet Xcode
+    name: Projet et icônes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - run: python3 tools/check_pbxproj.py
+      # Les noms d'icônes sont répétés à quatre endroits qu'aucun compilateur
+      # ne rapproche : une faute de frappe ne se verrait que sur un appareil.
+      - run: python3 tools/check_icons.py
 
   build:
     name: Compilation iOS et watchOS
