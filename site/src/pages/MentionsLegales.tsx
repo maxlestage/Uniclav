@@ -44,10 +44,11 @@ export function MentionsLegales() {
       <p>
         {site.name}, son logiciel, son interface, ses textes et ses éléments
         graphiques sont protégés par le droit de la propriété intellectuelle et
-        demeurent la propriété exclusive de l’éditeur. Le code source n’est pas
-        public : {site.name} n’est pas un logiciel libre et aucune licence de
-        reproduction, de modification, de distribution ou de décompilation n’est
-        concédée, hors les exceptions prévues par la loi.
+        demeurent la propriété exclusive de l’éditeur. {site.name} n’est pas un
+        logiciel libre : aucune licence de reproduction, de modification, de
+        distribution ou de décompilation n’est concédée, hors les exceptions
+        prévues par la loi. La consultation éventuelle du code source ne vaut
+        pas licence.
       </p>
       <p>
         Les données lexicales issues du Wiktionnaire francophone sont publiées

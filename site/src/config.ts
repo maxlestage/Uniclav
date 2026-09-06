@@ -36,21 +36,25 @@ export const site = {
   /**
    * Pages légales. Ce sont des fichiers statiques distincts : l'extension
    * .html garantit qu'ils s'ouvrent sur n'importe quel hébergeur, sans
-   * réécriture d'URL ni repli d'application monopage. Un hébergeur qui gère
-   * les URL propres peut la masquer.
+   * réécriture d'URL ni repli d'application monopage.
    */
   legalLinks: [
-    { label: "Mentions légales", href: "/mentions-legales.html" },
-    { label: "Politique de confidentialité", href: "/confidentialite.html" },
-    { label: "Conditions générales d'utilisation", href: "/cgu.html" },
-    { label: "Déclaration d'accessibilité", href: "/accessibilite.html" },
+    { label: "Mentions légales", href: "./mentions-legales.html" },
+    { label: "Politique de confidentialité", href: "./confidentialite.html" },
+    { label: "Conditions générales d'utilisation", href: "./cgu.html" },
+    { label: "Déclaration d'accessibilité", href: "./accessibilite.html" },
   ],
 
+  /**
+   * Tous les liens internes sont relatifs. Un site de projet GitHub Pages est
+   * servi sous un sous-répertoire — /Uniclav/ — où un chemin absolu pointerait
+   * à la racine du domaine et casserait.
+   */
   productLinks: [
-    { label: "Les deux dispositions", href: "#dispositions" },
-    { label: "Essayer la frappe", href: "#demonstration" },
-    { label: "Confidentialité", href: "#confidentialite" },
-    { label: "Application montre", href: "#montre" },
+    { label: "Les deux dispositions", href: "./#dispositions" },
+    { label: "Essayer la frappe", href: "./#demonstration" },
+    { label: "Confidentialité", href: "./#confidentialite" },
+    { label: "Application montre", href: "./#montre" },
   ],
 
   supportLinks: [

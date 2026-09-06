@@ -234,9 +234,13 @@ exploitable. C'est pourquoi l'enrichissement est ciblé plutôt qu'exhaustif.
 ## Site vitrine
 
 `site/` contient le site de présentation, en React + TypeScript construit par
-Bun, pensé pour le téléphone d'abord. Voir [`site/README.md`](site/README.md) —
-notamment les mentions légales qui restent à renseigner avant toute mise en
-ligne.
+Bun, pensé pour le téléphone d'abord. Il est publié sur GitHub Pages par
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) à chaque poussée
+sur `master`.
+
+Voir [`site/README.md`](site/README.md) — notamment les mentions légales qui
+restent à renseigner, et les précautions liées au sous-répertoire d'un site de
+projet.
 
 ## Intégration continue
 
