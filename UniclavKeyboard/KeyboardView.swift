@@ -54,7 +54,21 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     private var multiTapIndex = 0
     private var multiTapTimer: Timer?
 
-    private var palette = KeyboardSettings.palette
+    private var palette = KeyboardSettings.palette(dark: false)
+
+    /// Le clavier est-il en apparence sombre ?
+    ///
+    /// Deux sources, dans l'ordre où iOS les applique à son propre clavier :
+    /// le champ de saisie peut réclamer une apparence précise
+    /// (`keyboardAppearance`), et à défaut on suit celle du système. Un champ
+    /// sombre dans une application claire aurait sinon un clavier clair.
+    private var isDarkAppearance: Bool {
+        switch controller.textDocumentProxy.keyboardAppearance {
+        case .dark: return true
+        case .light: return false
+        default: return traitCollection.userInterfaceStyle == .dark
+        }
+    }
 
     // MARK: - Sous-vues
 
@@ -147,7 +161,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         dismissAccentPopup()
         handSide = KeyboardSettings.handSide
         layout = KeyboardSettings.layout
-        palette = KeyboardSettings.palette
+        palette = KeyboardSettings.palette(dark: isDarkAppearance)
         usingFallback = false
         commitMultiTap()
         predictionEngine.prepare(grouping: effectiveLayout.grouping)
@@ -206,7 +220,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
 
             // En AZERTY, la touche de repli n'aurait nulle part où mener.
             for key in row where !(key == .switchLayout && layout == .azerty) {
-                let button = KeyButton(key: key)
+                let button = KeyButton(key: key, palette: palette)
                 configureActions(for: button)
                 rowStack.addArrangedSubview(button)
                 if key == .shift { shiftButton = button }
@@ -269,6 +283,24 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
         sideSwitchButton.tintColor = palette.keyText.uiColor
     }
 
+    /// L'iPhone bascule en sombre pendant la frappe : le clavier suit sans
+    /// être reconstruit, seules les couleurs changent.
+    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+        super.traitCollectionDidChange(previous)
+        guard traitCollection.userInterfaceStyle != previous?.userInterfaceStyle else { return }
+        refreshPalette()
+    }
+
+    /// Relit la palette pour l'apparence du moment, et repeint si elle a
+    /// changé. Aucune reconstruction : les touches sont les mêmes.
+    func refreshPalette() {
+        let resolved = KeyboardSettings.palette(dark: isDarkAppearance)
+        guard resolved.keyFace != palette.keyFace || resolved.keyText != palette.keyText else { return }
+        palette = resolved
+        dismissAccentPopup()
+        restyle()
+    }
+
     // MARK: - Contexte et suggestions
 
     /// Mot en cours de frappe, extrait du contexte du champ de texte.
@@ -284,6 +316,9 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     /// À appeler quand le texte du champ change : met à jour suggestions,
     /// majuscule automatique et libellés des touches.
     func updateFromContext() {
+        // Le champ de saisie a pu changer, et avec lui l'apparence qu'il
+        // réclame : un champ sombre dans une application claire.
+        refreshPalette()
         // Pendant la frappe groupée, la barre et le champ sont pilotés par
         // `refreshPending` : le contexte ne doit pas les contredire.
         guard pendingSignature.isEmpty else { return }
@@ -638,7 +673,7 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
             let displayed = shiftState != .off
                 ? variants.map { $0.uppercased(with: Locale(identifier: "fr_FR")) }
                 : variants
-            let popup = AccentPopupView(variants: displayed)
+            let popup = AccentPopupView(variants: displayed, palette: palette)
             popup.onPick = { [weak self] variant in
                 self?.insertVariant(variant)
                 self?.dismissAccentPopup()

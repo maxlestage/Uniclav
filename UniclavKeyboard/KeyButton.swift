@@ -7,10 +7,11 @@ final class KeyButton: UIButton {
     private var uppercase = false
     private var largeLabels = true
     private var highContrast = false
-    private var palette = KeyboardSettings.palette
+    private var palette: KeyboardPalette
 
-    init(key: Key) {
+    init(key: Key, palette: KeyboardPalette) {
         self.key = key
+        self.palette = palette
         super.init(frame: .zero)
         layer.cornerRadius = 9
         layer.shadowColor = UIColor.black.cgColor  // l'ombre reste neutre
@@ -19,7 +20,7 @@ final class KeyButton: UIButton {
         layer.shadowRadius = 0
         translatesAutoresizingMaskIntoConstraints = false
         applyStyle(largeLabels: true, highContrast: false, shiftActive: false,
-                   palette: KeyboardSettings.palette)
+                   palette: palette)
         refreshTitle()
         configureAccessibility()
     }

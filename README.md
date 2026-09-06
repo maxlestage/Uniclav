@@ -9,9 +9,10 @@ touches, prédiction de mots en français avec dictionnaire embarqué.
   fréquence, grosses touches, très grosses touches et appuis répétés. Chacun
   répond à une gêne différente ; aucun n'est meilleur dans l'absolu. Voir
   *Modes de clavier*.
-- **Couleurs réglables** : sept thèmes, tous mesurés au niveau AAA de WCAG, ou
-  vos propres couleurs — fond des touches et lettres réglés séparément, avec le
-  rapport de contraste affiché en direct.
+- **Couleurs réglables** : quatorze thèmes — sept sobres, six de fantaisie, un
+  automatique qui suit l'apparence de l'iPhone — tous mesurés au niveau AAA de
+  WCAG, ou vos propres couleurs, fond des touches et lettres réglés séparément
+  avec le rapport de contraste affiché en direct.
 - **Clavier à une main** : les touches sont regroupées du côté de la main valide
   (gauche ou droite), avec une flèche ⇄ pour changer de côté en un geste.
 - **Grandes touches réglables** : largeur du clavier (60 à 100 % de l'écran) et
@@ -129,8 +130,9 @@ lui-même son masque.
 
 ### Icônes de rechange
 
-L'application propose **sept icônes**, une par thème de couleurs, choisies dans
-la section *Icône*. « Encre sur sable » est l'icône principale ; les six autres
+L'application propose **treize icônes**, une par thème fixe, choisies dans la
+section *Icône*. Le thème automatique n'en a pas : il a deux palettes, quand
+une icône de rechange iOS n'en a qu'une. « Encre sur sable » est l'icône principale ; les six autres
 sont des fichiers PNG posés à la racine du paquet et déclarés sous
 `CFBundleIcons` → `CFBundleAlternateIcons` dans `Uniclav/Info.plist`.
 
@@ -342,7 +344,33 @@ apporter.
 
 ## Couleurs
 
-Sept thèmes, et la possibilité de choisir ses propres couleurs. Le fond des
+### Automatique
+
+Le thème **« Automatique »** suit l'apparence de l'iPhone : *Encre sur sable*
+le jour, *Nuit* le soir, comme le clavier du système.
+
+Deux sources sont consultées, dans l'ordre où iOS les applique à son propre
+clavier :
+
+1. `textDocumentProxy.keyboardAppearance` — un champ de saisie peut réclamer
+   une apparence précise. Un champ sombre dans une application claire garde
+   ainsi un clavier sombre ;
+2. à défaut, `traitCollection.userInterfaceStyle`, l'apparence du système.
+
+Le basculement est pris en direct : `traitCollectionDidChange` repeint les
+touches sans reconstruire le clavier, et l'apparence est relue à chaque
+changement de champ. Les deux palettes sont mesurées — **14,9:1 le jour,
+9,6:1 le soir**, AAA dans les deux cas. C'est le moins bon des deux qui est
+annoncé dans les réglages : c'est celui qu'on subira une partie du temps.
+
+`KeyboardSettings.palette(dark:)` prend l'apparence en paramètre au lieu de la
+lire. Une propriété statique consultée au mauvais moment aurait renvoyé le
+clair sous un iPhone en mode sombre.
+
+### Les quatorze thèmes
+
+Sept sobres, six de fantaisie, plus l'automatique — et la possibilité de
+choisir ses propres couleurs. Le fond des
 touches et la couleur des lettres se règlent **séparément** ; les autres teintes
 — touches de service, fond général — en sont dérivées par mélange, pour qu'un
 seul choix suffise.
@@ -356,6 +384,19 @@ seul choix suffise.
 | Noir sur jaune | 12,9:1 |
 | Bleu profond | 13,7:1 |
 | Vert d'eau | 11,5:1 |
+| Néon | 14,5:1 |
+| Terminal ambre | 9,4:1 |
+| Bonbon | 11,7:1 |
+| Agrume | 8,7:1 |
+| Lavande | 12,7:1 |
+| Prune | 13,4:1 |
+
+Les six derniers sont là pour le plaisir — vert fluo, ambre à phosphore, rose
+dragée. **Ils passent la même mesure que les autres** : quatorze candidats ont
+été calculés, ceux retenus atteignent tous AAA. L'amusement n'est pas une raison
+de faire une exception, et les thèmes de fantaisie sont présentés dans une
+section distincte pour que quinze lignes d'affilée ne deviennent pas
+elles-mêmes un obstacle.
 
 Tous atteignent le niveau **AAA** de WCAG 2.1 (rapport ≥ 7:1). Ce n'est pas une
 coquetterie : sur un clavier destiné à des personnes dont la vue peut avoir été
@@ -475,6 +516,20 @@ La CI l'exécute sur Linux **avant** de mobiliser le runner macOS : un projet
 cassé se voit en deux secondes au lieu de trois minutes.
 
 `tools/make_icons.py` engendre les icônes de rechange (voir *Icône*).
+
+`tools/check_icons.py` confronte les **quatre listes** où les noms d'icônes
+sont répétés sans qu'aucun compilateur ne les rapproche : le générateur, les
+fichiers sur le disque, `CFBundleAlternateIcons` dans `Info.plist`, et
+`AppIconChoice.swift`. Il vérifie aussi que chaque icône existe aux deux
+échelles et n'a pas de canal alpha.
+
+```
+python3 tools/check_icons.py
+```
+
+C'était une réserve laissée ouverte : `UIImage(named:)` et `CFBundleIconFiles`
+sont des chaînes, et une faute de frappe ne se serait vue que sur un appareil.
+La CI l'exécute avec le contrôle du projet.
 
 ## Intégration continue
 

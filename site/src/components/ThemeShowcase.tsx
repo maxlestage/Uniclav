@@ -1,4 +1,12 @@
-import { THEMES, formatRatio, paletteOf, toHex, wcagLevel } from "../lib/themes.ts";
+import {
+  SYSTEM_THEME,
+  THEMES,
+  formatRatio,
+  paletteOf,
+  toHex,
+  wcagLevel,
+} from "../lib/themes.ts";
+import type { Theme } from "../lib/themes.ts";
 import { Mark } from "./Mark.tsx";
 
 /**
@@ -38,10 +46,43 @@ function ThemeSwatch({ face, text, label }: { face: string; text: string; label:
   );
 }
 
-export function ThemeShowcase() {
+/** Le thème automatique : deux vignettes, parce qu'un seul aperçu mentirait. */
+export function SystemTheme() {
+  const clair = paletteOf(SYSTEM_THEME.light.face, SYSTEM_THEME.light.text).ratio;
+  const sombre = paletteOf(SYSTEM_THEME.dark.face, SYSTEM_THEME.dark.text).ratio;
   return (
     <ul className="themes">
-      {THEMES.map((theme) => {
+      <li className="theme theme--system">
+        <div className="theme__pair">
+          <ThemeSwatch
+            face={SYSTEM_THEME.light.face}
+            text={SYSTEM_THEME.light.text}
+            label="Automatique, le jour"
+          />
+          <ThemeSwatch
+            face={SYSTEM_THEME.dark.face}
+            text={SYSTEM_THEME.dark.text}
+            label="Automatique, le soir"
+          />
+        </div>
+        <div className="theme__body">
+          <h3 className="theme__name">{SYSTEM_THEME.label}</h3>
+          <p className="theme__note">{SYSTEM_THEME.note}</p>
+          <p className="theme__ratio">
+            <strong>{formatRatio(clair)}</strong> le jour,{" "}
+            <strong>{formatRatio(sombre)}</strong> le soir{" "}
+            <span className="badge">{wcagLevel(Math.min(clair, sombre))}</span>
+          </p>
+        </div>
+      </li>
+    </ul>
+  );
+}
+
+export function ThemeShowcase({ themes = THEMES }: { themes?: readonly Theme[] }) {
+  return (
+    <ul className="themes">
+      {themes.map((theme) => {
         const ratio = paletteOf(theme.face, theme.text).ratio;
         return (
           <li key={theme.id} className="theme">

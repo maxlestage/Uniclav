@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 struct ContentView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var updater: DictionaryUpdater
     @State private var autoUpdate = KeyboardSettings.autoUpdateDictionary
     @State private var shareUnknown = KeyboardSettings.shareUnknownWords
@@ -28,6 +29,7 @@ struct ContentView: View {
                 sizeSection
                 displaySection
                 colorSection
+                fancifulSection
                 iconSection
                 dictionarySection
                 testSection
@@ -222,8 +224,8 @@ struct ContentView: View {
                         keyText: keyboardColor(from: customText))
     }
 
-    private func palette(for theme: KeyboardTheme) -> KeyboardPalette {
-        guard let preset = theme.preset else { return customPalette }
+    private func palette(for theme: KeyboardTheme, dark: Bool? = nil) -> KeyboardPalette {
+        guard let preset = theme.preset(dark: dark ?? (colorScheme == .dark)) else { return customPalette }
         return KeyboardPalette(keyFace: preset.face, keyText: preset.text)
     }
 
@@ -317,34 +319,71 @@ struct ContentView: View {
         }
     }
 
+    /// Une ligne de thème, réutilisée par les deux listes.
+    private func themeRow(_ option: KeyboardTheme) -> some View {
+        Button {
+            theme = option
+            KeyboardSettings.theme = option
+        } label: {
+            HStack(spacing: 12) {
+                if option == .system {
+                    // Un seul aperçu mentirait : ce thème en a deux.
+                    HStack(spacing: 4) {
+                        swatch(palette(for: option, dark: false))
+                        swatch(palette(for: option, dark: true))
+                    }
+                } else {
+                    swatch(palette(for: option))
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(option.label)
+                        .font(.headline)
+                    if let note = option.note {
+                        Text(note)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(contrastText(for: option))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: option == theme ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(option == theme ? Color.accentColor : Color.secondary)
+                    .accessibilityHidden(true)
+            }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(option == theme ? [.isButton, .isSelected] : .isButton)
+    }
+
+    /// « Automatique » a deux rapports : on annonce le moins bon des deux,
+    /// puisque c'est celui qu'on subira une partie du temps.
+    private func contrastText(for option: KeyboardTheme) -> String {
+        guard option == .system else { return contrastLabel(palette(for: option).contrastRatio) }
+        let clair = palette(for: option, dark: false).contrastRatio
+        let sombre = palette(for: option, dark: true).contrastRatio
+        return String(format: "Contraste %.1f:1 le jour, %.1f:1 le soir — %@",
+                      clair, sombre, contrastGrade(min(clair, sombre)))
+    }
+
+    private var fancifulSection: some View {
+        Section {
+            ForEach(KeyboardTheme.allCases.filter(\.isFanciful)) { themeRow($0) }
+        } header: {
+            Text("Fantaisie")
+        } footer: {
+            Text("Les six atteignent le niveau AAA, comme les autres. Se faire plaisir ne dispense pas de lire ce qu'on écrit.")
+        }
+    }
+
     private var colorSection: some View {
         Section {
-            ForEach(KeyboardTheme.allCases) { option in
-                Button {
-                    theme = option
-                    KeyboardSettings.theme = option
-                } label: {
-                    HStack(spacing: 12) {
-                        swatch(palette(for: option))
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(option.label)
-                                .font(.headline)
-                            Text(contrastLabel(palette(for: option).contrastRatio))
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: option == theme ? "checkmark.circle.fill" : "circle")
-                            .font(.title3)
-                            .foregroundStyle(option == theme ? Color.accentColor : Color.secondary)
-                            .accessibilityHidden(true)
-                    }
-                    .padding(.vertical, 4)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(option == theme ? [.isButton, .isSelected] : .isButton)
-            }
+            ForEach(KeyboardTheme.allCases.filter { !$0.isFanciful && $0 != .custom }) { themeRow($0) }
+            themeRow(.custom)
 
             if theme == .custom {
                 ColorPicker("Fond des touches", selection: $customFace, supportsOpacity: false)

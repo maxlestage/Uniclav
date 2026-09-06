@@ -33,7 +33,17 @@ THEMES = [
     ("NoirSurJaune", "FFD400", "141414"),
     ("BleuProfond", "12284B", "F5F7FA"),
     ("VertDEau", "E8F1EC", "16352B"),
+    # Fantaisistes. Les noms restent en ASCII : ils servent de nom de fichier
+    # et de clé dans Info.plist.
+    ("Neon", "0B0B12", "39FF14"),
+    ("TerminalAmbre", "0D1F0D", "FFB000"),
+    ("Bonbon", "FFD9E8", "4A0E2E"),
+    ("Agrume", "FFB703", "3A1F04"),
+    ("Lavande", "EDE7FF", "2E1065"),
+    ("Prune", "2A0A3D", "F3D9FF"),
 ]
+# « Automatique » n'a pas d'icône : il a deux palettes, et une icône de
+# rechange iOS n'en a qu'une.
 
 RENDER = 720
 SIZES = {2: 120, 3: 180}
