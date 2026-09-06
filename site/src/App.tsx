@@ -13,7 +13,7 @@ export function App() {
       </a>
 
       <header className="shell hero">
-        <Mark className="hero__mark" />
+        <Mark className="hero__mark" trail />
         <h1>{site.tagline}</h1>
         <p className="lede">{site.description}</p>
 
@@ -211,10 +211,17 @@ export function App() {
 
           <ThemeShowcase />
 
+          <p className="prose">
+            <strong>L’icône suit.</strong> Chaque thème a la sienne, à choisir
+            dans l’application — indépendamment du clavier, iOS affichant sa
+            propre alerte à chaque changement d’icône.
+          </p>
+
           <p className="prose note">
             Les rapports ci-dessus sont calculés sur cette page par la formule
             de luminance relative de WCAG 2.1, celle-là même qu’emploie
-            l’application — ils ne sont pas recopiés à la main.
+            l’application — ils ne sont pas recopiés à la main. Les icônes sont
+            dessinées avec la géométrie exacte du générateur.
           </p>
         </section>
 

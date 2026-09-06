@@ -55,6 +55,35 @@ et en écrit une de plus une fois qu'il est écoulé. Le délai est réglable su
 page, dans les mêmes bornes que l'application (0,6 à 3 s), parce que c'est
 justement ce réglage qui décide si le mode est utilisable ou non.
 
+## La marque et l'icône
+
+`src/lib/icon.ts` porte la géométrie de l'icône de l'application, reprise de
+`tools/make_icons.py` : la touche, les trois traits du A, la traînée des deux
+touches fantômes.
+
+Le site en dessinait auparavant une approximation dans `Mark.tsx`, et le
+favicon une deuxième, différente de la première — trois dessins pour une seule
+icône, dont deux ne ressemblaient pas à ce qui est livré. Ils partagent
+désormais les mêmes nombres.
+
+Ces nombres sont **recopiés**, faute d'un format que Python et TypeScript
+liraient tous deux : s'ils changeaient d'un côté, rien ne le signalerait de
+l'autre.
+
+Le signe de la rotation des fantômes n'a pas été deviné. Le SVG a été rendu
+dans les deux sens et comparé pixel à pixel au PNG produit par le générateur,
+sur la zone de la traînée : `rotate(-17,8)` donne un écart moyen de 2,99/255,
+`rotate(17,8)` de 5,59.
+
+La traînée est retirée en petit — favicon, pied de page, en-tête des pages
+légales — comme l'application la retire sur la montre : à cette taille, deux
+touches fantômes ne sont plus qu'une salissure.
+
+Chaque marque tire son identifiant de dégradé de `useId()`. Deux marques de
+mêmes couleurs sur une même page partageaient sinon leur `id`, ce qu'HTML
+interdit et que `url(#id)` résoudrait vers la première d'entre elles — c'était
+le cas de l'accueil, avec neuf marques pour sept identifiants.
+
 ## Les thèmes de couleurs
 
 `src/lib/themes.ts` porte `Shared/KeyboardTheme.swift` : les sept couples de

@@ -676,3 +676,16 @@ a {
   color: var(--ink-muted);
   margin-top: 1rem;
 }
+
+.theme__head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.theme__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 0.5625rem;
+  box-shadow: 0 0 0 1px rgb(38 34 29 / 0.12);
+}

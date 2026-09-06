@@ -1,4 +1,5 @@
 import { THEMES, formatRatio, paletteOf, toHex, wcagLevel } from "../lib/themes.ts";
+import { Mark } from "./Mark.tsx";
 
 /**
  * Les sept thèmes, rendus avec leurs vraies couleurs et leur rapport de
@@ -46,7 +47,16 @@ export function ThemeShowcase() {
           <li key={theme.id} className="theme">
             <ThemeSwatch face={theme.face} text={theme.text} label={theme.label} />
             <div className="theme__body">
-              <h3 className="theme__name">{theme.label}</h3>
+              <div className="theme__head">
+                <Mark
+                  className="theme__icon"
+                  face={theme.face}
+                  text={theme.text}
+                  trail
+                  label={`Icône de l’application, thème ${theme.label}`}
+                />
+                <h3 className="theme__name">{theme.label}</h3>
+              </div>
               <p className="theme__note">{theme.note}</p>
               <p className="theme__ratio">
                 <strong>{formatRatio(ratio)}</strong>{" "}
