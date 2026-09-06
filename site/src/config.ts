@@ -51,7 +51,7 @@ export const site = {
    * à la racine du domaine et casserait.
    */
   productLinks: [
-    { label: "Les deux dispositions", href: "./#dispositions" },
+    { label: "Les six modes", href: "./#dispositions" },
     { label: "Essayer la frappe", href: "./#demonstration" },
     { label: "Couleurs", href: "./#couleurs" },
     { label: "Confidentialité", href: "./#confidentialite" },

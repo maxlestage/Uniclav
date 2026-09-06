@@ -2,6 +2,7 @@ import { site } from "./config.ts";
 import { Mark } from "./components/Mark.tsx";
 import { KeyPadDemo } from "./components/KeyPadDemo.tsx";
 import { LayoutPreview } from "./components/LayoutPreview.tsx";
+import { ThemeShowcase } from "./components/ThemeShowcase.tsx";
 import { Footer } from "./components/Footer.tsx";
 
 export function App() {
@@ -21,7 +22,7 @@ export function App() {
             Essayer la frappe
           </a>
           <a className="button button--secondary" href="#dispositions">
-            Voir les deux dispositions
+            Voir les six modes
           </a>
         </div>
 
@@ -150,8 +151,9 @@ export function App() {
           <p className="eyebrow">Démonstration</p>
           <h2 id="demonstration-titre">Tapez ici, avec un seul doigt.</h2>
           <p className="prose">
-            Cette démonstration utilise le dictionnaire de l’application et la
-            même désambiguïsation.
+            Les deux façons de se servir des grosses touches, avec le
+            dictionnaire de l’application et la même désambiguïsation. Le second
+            mode n’en emploie aucun : on appuie jusqu’à la bonne lettre.
           </p>
           <KeyPadDemo />
         </section>
@@ -191,6 +193,14 @@ export function App() {
             avertissant s’il descend trop bas. Sur un clavier destiné à des
             personnes dont la vue peut avoir été touchée par le même AVC, un
             réglage illisible n’est pas une option esthétique.
+          </p>
+
+          <ThemeShowcase />
+
+          <p className="prose note">
+            Les rapports ci-dessus sont calculés sur cette page par la formule
+            de luminance relative de WCAG 2.1, celle-là même qu’emploie
+            l’application — ils ne sont pas recopiés à la main.
           </p>
         </section>
 

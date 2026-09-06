@@ -48,6 +48,24 @@ restant proposés dans la barre. Sans cela, effacer une touche laisserait
 souvent le même mot à l'écran et paraîtrait sans effet. L'application suit la
 même règle depuis `PredictionEngine.groupedMatches`.
 
+La démonstration propose les deux façons de se servir des grosses touches. Le
+mode « appuis répétés » rejoue la mécanique de `KeyboardView.handleMultiTap` :
+un nouvel appui sur la même touche remplace la lettre tant que le délai court,
+et en écrit une de plus une fois qu'il est écoulé. Le délai est réglable sur la
+page, dans les mêmes bornes que l'application (0,6 à 3 s), parce que c'est
+justement ce réglage qui décide si le mode est utilisable ou non.
+
+## Les thèmes de couleurs
+
+`src/lib/themes.ts` porte `Shared/KeyboardTheme.swift` : les sept couples de
+couleurs, la formule de luminance relative de WCAG 2.1 et la dérivation des
+teintes secondaires par mélange.
+
+Les rapports de contraste affichés sur la page sont **calculés à l'exécution**,
+jamais recopiés. Un chiffre saisi à la main finit par mentir le jour où une
+couleur change — c'est d'ailleurs arrivé : le vert d'eau avait été annoncé à
+11,6:1 alors qu'il vaut 11,5:1.
+
 ## Publication sur GitHub Pages
 
 Le workflow [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)

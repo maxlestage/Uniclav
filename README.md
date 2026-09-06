@@ -219,7 +219,7 @@ seul choix suffise.
 | Jaune sur noir | 12,9:1 |
 | Noir sur jaune | 12,9:1 |
 | Bleu profond | 13,7:1 |
-| Vert d'eau | 11,6:1 |
+| Vert d'eau | 11,5:1 |
 
 Tous atteignent le niveau **AAA** de WCAG 2.1 (rapport ≥ 7:1). Ce n'est pas une
 coquetterie : sur un clavier destiné à des personnes dont la vue peut avoir été

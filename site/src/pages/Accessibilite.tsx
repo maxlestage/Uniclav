@@ -60,11 +60,27 @@ export function Accessibilite() {
 
       <h2>L’accessibilité de l’application</h2>
       <p>
-        L’application {site.name} vise l’accessibilité motrice : disposition à
-        huit grosses touches, clavier regroupé du côté de la main valide, taille
-        des touches réglable, contraste renforcé en option, libellés vocalisés
-        pour VoiceOver. Ces choix n’ont pas encore été validés par un usage
-        prolongé auprès des personnes concernées.
+        L’application {site.name} vise l’accessibilité motrice : six modes de
+        frappe, dont un à huit grosses touches et un sans dictionnaire, clavier
+        regroupé du côté de la main valide, taille des touches réglable,
+        libellés vocalisés pour VoiceOver. Ces choix n’ont pas encore été
+        validés par un usage prolongé auprès des personnes concernées.
+      </p>
+
+      <h2>Le contraste du clavier</h2>
+      <p>
+        Les sept thèmes de couleurs fournis atteignent tous le niveau AAA de
+        WCAG 2.1, soit un rapport de contraste supérieur à 7:1 entre le fond
+        d’une touche et ses lettres. C’est un calcul, pas un audit : la formule
+        de luminance relative est appliquée aux couleurs exactes du clavier, et
+        le résultat est vérifiable sur la page d’accueil.
+      </p>
+      <p>
+        Le réglage libre, lui, n’est pas contraint : rien n’empêche de choisir
+        deux teintes trop proches. L’application calcule alors le rapport en
+        direct et avertit sous 4,5:1, sans interdire le choix — laisser
+        quelqu’un se fabriquer un clavier illisible sans le prévenir serait un
+        défaut, le lui interdire serait de la condescendance.
       </p>
 
       <h2>Signaler un problème</h2>
