@@ -50,7 +50,7 @@ enum DictionaryUpdate {
             KeyboardSettings.coreVocabularyMerged = true
         }
 
-        let pending = PendingWords.all
+        let pending = KeyboardSettings.shareUnknownWords ? PendingWords.all : []
         if !pending.isEmpty {
             append(try await client.frenchWords(among: pending))
             PendingWords.remove(pending)

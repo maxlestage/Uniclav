@@ -417,6 +417,74 @@ a {
   color: rgb(242 235 222 / 0.66);
 }
 
+.legal-header {
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--sand-deep);
+}
+.legal-header__home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.legal-header__mark {
+  width: 2rem;
+  height: 2rem;
+}
+
+.legal {
+  padding-block: 2.5rem 3.5rem;
+  max-width: 42rem;
+}
+.legal h1 {
+  font-size: clamp(1.875rem, 7vw, 2.75rem);
+}
+.legal h2 {
+  font-size: 1.375rem;
+  margin-top: 2.5rem;
+}
+.legal h3 {
+  margin-top: 1.75rem;
+}
+.legal p,
+.legal ul {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+}
+.legal ul {
+  padding-left: 1.25rem;
+}
+.legal li {
+  margin-top: 0.5rem;
+}
+.legal__updated {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+.legal__lede {
+  font-size: 1.125rem;
+  color: var(--ink);
+}
+/* Le rappel « pas un dispositif médical » ne doit pas se lire comme un
+   paragraphe parmi d'autres. */
+.legal__warning-title {
+  border-left: 4px solid var(--ink);
+  padding-left: 0.875rem;
+}
+.legal dl {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+}
+.legal dt {
+  font-weight: 650;
+  color: var(--ink);
+  margin-top: 0.875rem;
+}
+.legal dd {
+  margin: 0.125rem 0 0;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

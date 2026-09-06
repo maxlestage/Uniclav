@@ -96,7 +96,7 @@ export function Footer() {
             © {copyrightRange} {site.copyrightHolder}. Tous droits réservés.
           </p>
           <p>
-            <a href="/accessibilite">Accessibilité : déclaration de conformité</a>
+            <a href="/accessibilite.html">Accessibilité : déclaration de conformité</a>
           </p>
         </div>
       </div>

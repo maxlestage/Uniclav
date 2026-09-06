@@ -30,12 +30,20 @@ export const site = {
     phone: "À COMPLÉTER — téléphone de l'hébergeur",
   },
 
-  /** Liens légaux. Les pages restent à écrire. */
+  /** Date affichée en tête de chaque page légale. */
+  legalUpdatedAt: "6 septembre 2026",
+
+  /**
+   * Pages légales. Ce sont des fichiers statiques distincts : l'extension
+   * .html garantit qu'ils s'ouvrent sur n'importe quel hébergeur, sans
+   * réécriture d'URL ni repli d'application monopage. Un hébergeur qui gère
+   * les URL propres peut la masquer.
+   */
   legalLinks: [
-    { label: "Mentions légales", href: "/mentions-legales" },
-    { label: "Politique de confidentialité", href: "/confidentialite" },
-    { label: "Conditions générales d'utilisation", href: "/cgu" },
-    { label: "Déclaration d'accessibilité", href: "/accessibilite" },
+    { label: "Mentions légales", href: "/mentions-legales.html" },
+    { label: "Politique de confidentialité", href: "/confidentialite.html" },
+    { label: "Conditions générales d'utilisation", href: "/cgu.html" },
+    { label: "Déclaration d'accessibilité", href: "/accessibilite.html" },
   ],
 
   productLinks: [

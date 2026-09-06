@@ -195,12 +195,27 @@ usages, comptés localement, qui les font remonter.
 1. **Le vocabulaire de base** du Wiktionnaire (la liste des mots que tous les
    Wiktionnaires devraient avoir), soit un millier de mots obtenus en une seule
    requête. Fusionné une fois pour toutes.
-2. **Les mots que le clavier n'a pas reconnus.** L'extension les note dans
-   l'App Group sans pouvoir les vérifier ; l'application demande au
-   Wiktionnaire s'ils sont français et, si oui, les ajoute définitivement avec
-   leurs accents. C'est la source qui compte le plus : ce sont les mots que
-   cette personne écrit réellement, noms propres compris — précisément ce que
-   les grosses touches ne savaient pas deviner.
+2. **Les mots que le clavier n'a pas reconnus**, si — et seulement si —
+   l'utilisateur l'a autorisé. L'extension les note dans l'App Group sans
+   pouvoir les vérifier ; l'application demande au Wiktionnaire s'ils sont
+   français et, si oui, les ajoute définitivement avec leurs accents. C'est la
+   source qui compte le plus : ce sont les mots que cette personne écrit
+   réellement, noms propres compris — précisément ce que les grosses touches ne
+   savaient pas deviner.
+
+### Les mots inconnus ne partent pas par défaut
+
+Un mot absent d'un dictionnaire français est le plus souvent un nom propre : un
+prénom, une commune, le nom d'un praticien. Ce sont exactement les mots qu'on
+n'envoie pas à un tiers sans l'avoir demandé.
+
+Leur soumission au Wiktionnaire fait donc l'objet d'un réglage distinct de la
+mise à jour du dictionnaire — `KeyboardSettings.shareUnknownWords` — **désactivé
+tant qu'il n'est pas explicitement activé**. Le vocabulaire de base, lui, ne
+révèle rien et continue d'être téléchargé.
+
+Désactivé, le clavier n'arrête pas d'apprendre : vos mots remontent toujours
+dans les suggestions, mais le calcul reste sur l'appareil.
 
 ### Rythme des mises à jour
 

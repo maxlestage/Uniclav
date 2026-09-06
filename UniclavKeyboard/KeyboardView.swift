@@ -390,13 +390,15 @@ final class KeyboardView: UIView, UIInputViewAudioFeedback {
     }
 
     private func refreshPending() {
-        let candidates = predictionEngine.groupedCandidates(forSignature: pendingSignature)
-        // Aucun mot connu : on montre au moins la première lettre de chaque
-        // touche, pour que le champ réagisse à la frappe.
-        let shown = candidates.isEmpty ? [LetterGroups.literal(for: pendingSignature)] : candidates
-        let display = shown.map(capitalizedIfNeeded)
-        replacePending(with: display[0])
-        showSuggestions(display)
+        let matches = predictionEngine.groupedMatches(forSignature: pendingSignature)
+        // Le champ montre un mot de la longueur frappée, pour qu'effacer se
+        // voie. À défaut de mot connu, la première lettre de chaque touche :
+        // le texte est faux, mais il réagit à la frappe.
+        let typed = matches.exact.first ?? LetterGroups.literal(for: pendingSignature)
+        replacePending(with: capitalizedIfNeeded(typed))
+        // Les complétions restent offertes dans la barre, à une touche.
+        let bar = Array((matches.exact + matches.completions).prefix(3))
+        showSuggestions(bar.map(capitalizedIfNeeded))
     }
 
     private func capitalizedIfNeeded(_ word: String) -> String {
