@@ -51,26 +51,38 @@ struct ContentView: View {
     }
 
     private var layoutSection: some View {
-        Section("Disposition") {
-            Picker("Disposition des lettres", selection: $layout) {
-                ForEach(KeyboardSettings.Layout.allCases) { option in
-                    Text(option.label).tag(option)
+        Section {
+            // Une liste plutôt qu'un sélecteur segmenté : à cinq modes, les
+            // libellés seraient illisibles, et surtout chaque mode a besoin
+            // d'une phrase pour qu'on puisse choisir en connaissance de cause.
+            ForEach(KeyboardSettings.Layout.allCases) { mode in
+                Button {
+                    layout = mode
+                    KeyboardSettings.layout = mode
+                } label: {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: mode == layout ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                            .foregroundStyle(mode == layout ? Color.accentColor : Color.secondary)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(mode.label)
+                                .font(.headline)
+                            Text(mode.summary)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 6)
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(mode == layout ? [.isButton, .isSelected] : .isButton)
             }
-            .pickerStyle(.segmented)
-            .onChange(of: layout) { KeyboardSettings.layout = $0 }
-
-            Text(layout == .grouped
-                 ? "Huit grosses touches de trois ou quatre lettres. Vous tapez la touche qui porte la lettre, sans viser précisément : le dictionnaire retrouve le mot. Chaque touche est près de trois fois plus large qu'en AZERTY."
-                 : "Une lettre par touche, dix par rangée. Les touches sont étroites et demandent de la précision.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-
-            if layout == .grouped {
-                Text("Si un mot reste introuvable — un nom propre, par exemple — la touche ⊞ du clavier ramène l'AZERTY le temps de l'écrire.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
+        } header: {
+            Text("Mode de clavier")
+        } footer: {
+            Text("Aucun mode n'est meilleur qu'un autre : le bon est celui qui convient à votre main, et vous pouvez en changer à tout moment.\n\nDans les modes à touches groupées, la touche ⊞ du clavier ramène l'AZERTY le temps d'écrire un mot que le dictionnaire ignore — un nom propre, le plus souvent — puis vous y ramène.")
         }
     }
 

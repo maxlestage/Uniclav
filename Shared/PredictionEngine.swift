@@ -9,8 +9,11 @@ final class PredictionEngine {
     /// Version normalisée (minuscules, sans accents) alignée sur `words`.
     private var normalizedWords: [String] = []
     /// Signature de saisie groupée de chaque mot, alignée sur `words` ; nil
-    /// pour les mots contenant un caractère hors des huit groupes.
+    /// pour les mots contenant un caractère hors des groupes.
     private var signatures: [String?] = []
+    /// Découpage pour lequel `signatures` a été calculé. Changer de mode le
+    /// change aussi, et l'index doit alors être reconstruit.
+    private var signatureGrouping: LetterGroups.Grouping?
     /// Mots appris : mot -> nombre d'utilisations.
     private var userWords: [String: Int] = [:]
     /// Formes normalisées du dictionnaire, pour reconnaître d'un coup si un
@@ -30,8 +33,9 @@ final class PredictionEngine {
         // livrée avec l'app.
         words = DictionaryStore.loadWords()
         normalizedWords = words.map { Self.normalize($0) }
-        signatures = words.map { LetterGroups.signature(of: $0) }
         knownNormalized = Set(normalizedWords)
+        signatureGrouping = nil
+        signatures = []
     }
 
     /// Minuscules et suppression des diacritiques, pour qu'un préfixe tapé
@@ -72,6 +76,16 @@ final class PredictionEngine {
         return results
     }
 
+    /// Construit l'index des signatures pour le découpage demandé. Appelée à
+    /// chaque configuration du clavier ; ne recalcule rien si le découpage
+    /// n'a pas changé.
+    func prepare(grouping: LetterGroups.Grouping?) {
+        guard let grouping = grouping else { return }
+        guard signatureGrouping != grouping else { return }
+        signatureGrouping = grouping
+        signatures = words.map { LetterGroups.signature(of: $0, grouping: grouping) }
+    }
+
     /// Mots correspondant à une suite de touches groupées, séparés en deux :
     /// ceux qui font exactement la longueur frappée, et les mots plus longs
     /// qui valent complétion.
@@ -81,7 +95,7 @@ final class PredictionEngine {
     /// l'écran — quatre touches de « merci » proposent encore « merci » — et
     /// l'effacement paraîtrait sans effet.
     func groupedMatches(forSignature signature: String) -> (exact: [String], completions: [String]) {
-        guard !signature.isEmpty else { return ([], []) }
+        guard !signature.isEmpty, let grouping = signatureGrouping else { return ([], []) }
 
         var exact: [String] = []
         var longer: [String] = []
@@ -99,7 +113,7 @@ final class PredictionEngine {
 
         // Les mots appris passent devant, comme pour les suggestions.
         for (word, _) in userWords.sorted(by: { $0.value > $1.value }) {
-            if let wordSignature = LetterGroups.signature(of: word) {
+            if let wordSignature = LetterGroups.signature(of: word, grouping: grouping) {
                 consider(word, wordSignature)
             }
         }

@@ -1,18 +1,20 @@
 /** Aperçu schématique d'une disposition : on compare des largeurs de touches,
  *  pas des lettres. */
-export function LayoutPreview({ variant }: { variant: "azerty" | "grouped" }) {
-  const rows = variant === "azerty" ? [10, 10, 9] : [4, 4, 4];
+const SHAPES = {
+  azerty: { rows: [10, 10, 9], label: "dix touches étroites par rangée" },
+  grouped: { rows: [4, 4, 4], label: "quatre touches larges par rangée" },
+  "grouped-large": { rows: [3, 3, 4], label: "trois touches très larges par rangée" },
+} as const;
+
+export function LayoutPreview({ variant }: { variant: keyof typeof SHAPES }) {
+  const shape = SHAPES[variant];
   return (
     <div
       className={`layout-preview layout-preview--${variant}`}
       role="img"
-      aria-label={
-        variant === "azerty"
-          ? "Disposition AZERTY : dix touches étroites par rangée"
-          : "Disposition à grosses touches : quatre touches larges par rangée"
-      }
+      aria-label={`Disposition : ${shape.label}`}
     >
-      {rows.map((count, row) => (
+      {shape.rows.map((count, row) => (
         <div
           key={row}
           className="layout-preview__row"
