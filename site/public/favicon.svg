@@ -1,16 +1,16 @@
-<!-- Même géométrie que l'icône de l'application (tools/make_icons.py) et que
-     src/lib/icon.ts. La traînée en est retirée : à 16 px elle ne serait
-     qu'une salissure. -->
+<!-- Même géométrie que l'icône livrée, relevée pixel par pixel
+     (tools/make_icons.py, src/lib/icon.ts). La traînée en est retirée : à
+     16 px elle ne serait qu'une salissure. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
   <defs>
     <linearGradient id="fond" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FBF8F2"/>
-      <stop offset="1" stop-color="#E1DAD0"/>
+      <stop offset="0" stop-color="#F2EBDE"/>
+      <stop offset="1" stop-color="#D8CDB8"/>
     </linearGradient>
   </defs>
   <rect width="1000" height="1000" rx="220" fill="url(#fond)"/>
-  <rect x="330" y="200" width="490" height="484" rx="55" fill="#26221D"/>
-  <path d="M575 287 L472 585 M575 287 L678 585 M512 492 L638 492"
-        fill="none" stroke="#FBF8F2" stroke-width="46"
+  <rect x="334" y="203" width="476" height="476" rx="63.5" fill="#26221D"/>
+  <path d="M571.8 314.1 L471.7 566.4 M571.8 314.1 L671.9 566.4 M507.7 475.6 L635.8 475.6"
+        fill="none" stroke="#F2EBDE" stroke-width="54.7"
         stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

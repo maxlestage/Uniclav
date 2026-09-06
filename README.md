@@ -146,8 +146,30 @@ python3 tools/make_icons.py
 ```
 
 Le motif ne change pas d'une icône à l'autre : seules les couleurs sont
-reprises des thèmes. Le fond des touches devient le fond de l'icône, la couleur
-des lettres devient la touche, et la lettre reprend le fond.
+reprises des thèmes. Le fond des touches devient le haut du dégradé, la couleur
+des lettres devient la touche, et la lettre reprend le haut du dégradé.
+
+**Sa géométrie a été relevée sur l'icône livrée, pas dessinée d'après une
+intention.** Une première version, ajustée à l'œil, s'en écartait de 15,45/255
+en moyenne — 81 % des pixels au-delà de 8 : les variantes n'étaient donc pas
+« la même icône, d'autres couleurs ». Les mesures ont été reprises pixel par
+pixel dans un navigateur : la touche est un carré de 487 et non un rectangle,
+son rayon vaut 65 et non 55, le trait du A fait 56 et non 47, et le fond va de
+F2EBDE à D8CDB8 — la paire « sable » de l'identité, qui n'est pas un mélange
+uniforme du fond des touches vers l'encre.
+
+| Zone | Écart avant | Écart après |
+|---|---|---|
+| Image entière | 15,45 | **0,72** |
+| Le fond | 14,11 | **0,02** |
+| La touche | 13,71 | 1,52 |
+| La lettre | 26,56 | 2,02 |
+| La traînée | 14,20 | 3,19 |
+
+Écart moyen par canal, sur 255, entre le PNG livré et celui du générateur aux
+mêmes couleurs. Il reste 1,44 % de pixels au-delà de 8, tous sur les contours :
+le générateur seuille à haute résolution puis réduit, là où le dessin d'origine
+lissait autrement.
 
 Deux points à connaître :
 

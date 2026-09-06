@@ -70,7 +70,11 @@ Ces nombres sont **recopiés**, faute d'un format que Python et TypeScript
 liraient tous deux : s'ils changeaient d'un côté, rien ne le signalerait de
 l'autre.
 
-Le signe de la rotation des fantômes n'a pas été deviné. Le SVG a été rendu
+Ces nombres ont été relevés sur l'icône livrée, pixel par pixel : la version
+précédente s'en écartait de 15,45/255 en moyenne. Voir *Icône* dans le README
+de la racine pour le détail des mesures.
+
+Le signe de la rotation des fantômes n'a pas été deviné non plus. Le SVG a été rendu
 dans les deux sens et comparé pixel à pixel au PNG produit par le générateur,
 sur la zone de la traînée : `rotate(-17,8)` donne un écart moyen de 2,99/255,
 `rotate(17,8)` de 5,59.

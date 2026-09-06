@@ -77,45 +77,63 @@ def capsule(px, py, ax, ay, bx, by, radius):
 
 # --- Le motif, en coordonnées normalisées ----------------------------------
 
-KEY = (0.575, 0.442, 0.245, 0.242, 0.055)      # centre x, y, demi-largeur, demi-hauteur, rayon
-GHOSTS = [                                       # centre x, y, demi-côté, rayon, angle, mélange
-    (0.335, 0.655, 0.098, 0.028, -0.31, 0.30),
-    (0.172, 0.792, 0.085, 0.026, -0.31, 0.22),
+# Ces valeurs ne sont pas dessinées d'après une intention : elles sont
+# relevées sur l'icône livrée (Uniclav/Assets.xcassets/…/AppIcon-1024.png),
+# pixel par pixel, puis divisées par 1024. Une première version approximative
+# s'en écartait de 15,45/255 en moyenne — les variantes n'étaient donc pas
+# « la même icône, d'autres couleurs », comme je l'avais écrit.
+
+KEY = (0.57178, 0.44092, 0.23779, 0.23779, 0.06348)   # centre x, y, demi-côtés, rayon
+GHOSTS = [                                            # centre x, y, demi-côté, rayon, angle, mélange
+    (0.32666, 0.65234, 0.08203, 0.02188, -0.31, 0.218),
+    (0.18262, 0.77148, 0.07813, 0.02090, -0.31, 0.129),
 ]
-STROKE = 0.023
-LETTER = [                                       # les trois traits du A
-    (0.575, 0.287, 0.472, 0.585),
-    (0.575, 0.287, 0.678, 0.585),
-    (0.512, 0.492, 0.638, 0.492),
+STROKE = 0.02734
+LETTER = [                                            # les trois traits du A
+    (0.57178, 0.31406, 0.47168, 0.56641),
+    (0.57178, 0.31406, 0.67188, 0.56641),
+    (0.50771, 0.47559, 0.63584, 0.47559),
 ]
+# Le fond est un dégradé vertical. Sur l'icône livrée il va de F2EBDE à
+# D8CDB8 — la paire « sable » de l'identité, qui n'est pas un mélange uniforme
+# du fond des touches vers l'encre. Pour un thème quelconque, aucune paire de
+# ce genre n'existe : on descend donc de 16 % vers la couleur des lettres, ce
+# qui est la moyenne des trois canaux relevée sur l'icône livrée.
+GROUND_BLEND = 0.16
 
 
-def shade(x: float, y: float, face, text):
+def shade(x: float, y: float, face, text, ground):
     """Couleur d'un point, du fond vers l'avant."""
-    # Fond : un dégradé très court, du fond des touches vers la teinte que
-    # l'application pose derrière le clavier.
-    colour = blend(face, blend(face, text, 0.14), y)
+    colour = blend(ground[0], ground[1], y)
 
     for cx, cy, half, radius, angle, amount in GHOSTS:
         if rotated_box(x, y, cx, cy, half, half, radius, angle) < 0:
-            colour = blend(face, text, amount)
+            colour = blend(colour, text, amount)
 
     cx, cy, hw, hh, radius = KEY
     if rounded_box(x, y, cx, cy, hw, hh, radius) < 0:
         colour = text
         for ax, ay, bx, by in LETTER:
             if capsule(x, y, ax, ay, bx, by, STROKE) < 0:
-                colour = face
+                # La lettre reprend le haut du fond, pas le fond des touches :
+                # c'est ce que fait l'icône livrée.
+                colour = ground[0]
     return colour
 
 
 # --- Rendu et écriture ------------------------------------------------------
 
-def render(face, text) -> list[list[tuple[float, float, float]]]:
+def ground_for(face, text):
+    """Le dégradé de fond d'un thème."""
+    return (face, blend(face, text, GROUND_BLEND))
+
+
+def render(face, text, ground=None) -> list[list[tuple[float, float, float]]]:
+    ground = ground or ground_for(face, text)
     rows = []
     for j in range(RENDER):
         y = (j + 0.5) / RENDER
-        rows.append([shade((i + 0.5) / RENDER, y, face, text) for i in range(RENDER)])
+        rows.append([shade((i + 0.5) / RENDER, y, face, text, ground) for i in range(RENDER)])
     return rows
 
 
