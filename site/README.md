@@ -69,9 +69,16 @@ Un `.nojekyll` est déposé pour que Pages serve les fichiers tels quels, et une
 `404.html` en HTML statique évite d'embarquer React pour annoncer une page
 absente.
 
-L'étape `configure-pages` active Pages automatiquement si ce n'est pas déjà
-fait. À défaut, il reste à choisir **Réglages › Pages › Source : GitHub
-Actions** dans le dépôt.
+### Une activation manuelle, une seule fois
+
+Avant la première publication, un administrateur du dépôt doit choisir
+**Réglages › Pages › Source : GitHub Actions**.
+
+Cette étape ne peut pas être automatisée : créer un site Pages est une
+opération d'administration que le jeton du workflow n'a pas le droit
+d'effectuer. L'option `enablement` de `actions/configure-pages` échoue sur
+« Resource not accessible by integration ». Une fois l'activation faite, le
+workflow se déroule seul à chaque poussée.
 
 ## Licence
 
